@@ -37,7 +37,9 @@ docuflu/
   "commander": "^9.4.1",      // CLI framework
   "chalk": "^4.1.2",          // Colored output (v4 for CommonJS)
   "dotenv": "^16.3.1",        // Environment variables
-  "ora": "^5.4.1"             // Spinner loading (v5 for CommonJS)
+  "ora": "^5.4.1",            // Spinner loading (v5 for CommonJS)
+  "form-data": "^4.0.0",      // Image upload support ✅
+  "mime-types": "^2.1.35"     // MIME type detection ✅
 }
 ```
 
@@ -135,6 +137,14 @@ node bin/docuflu.js sync --file docusaurus-example/docs/intro.md
 - Validate parsing results
 - Console output với results preview
 
+### 7. `/lib/core/image-processor.js` - Image Processor ✅
+- Extract images từ markdown với regex
+- Upload images lên Confluence attachments API
+- Convert HTML img tags → Confluence format  
+- Cache uploaded images để tránh duplicates
+- Handle both local files và external URLs
+- Two-stage process: create page → upload images → update page
+
 ## 🔑 Environment Variables Required
 
 ```bash
@@ -180,6 +190,7 @@ node bin/docuflu.js sync --file docusaurus-example/docs/intro.md
 8. **Error Handling**: Detailed error messages và recovery
 9. **Dry Run Mode**: Preview changes không thực sự sync
 10. **Configuration**: .env file support với validation
+11. **🖼️ Image Processing**: Upload local images + convert to Confluence format ✅
 
 ## 🎯 Next Steps (chưa implement)
 
@@ -216,8 +227,9 @@ node bin/docuflu.js sync --file docusaurus-example/docs/intro.md
 - Create/update pages ✅
 - Error handling ✅
 - Dry run mode ✅
+- **🖼️ Image processing**: Upload local images + convert format ✅
 
-**🚧 TRONG TƯƠNG LAI**: Multi-file sync, hierarchy, state management, images
+**🚧 TRONG TƯƠNG LAI**: Multi-file sync, hierarchy, state management
 
 ## 📞 Contact/Support Info
 
