@@ -1,6 +1,6 @@
 {
   "name": "docuflu",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "CLI tool to sync Docusaurus documentation to Confluence with hierarchy, internal links, and Mermaid diagram support",
   "main": "bin/docuflu.js",
   "bin": {
