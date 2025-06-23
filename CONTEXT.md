@@ -444,10 +444,3 @@ node bin/docuflu.js sync --docs  # Second run: 8 skipped (no changes)
 - **🖼️ Image processing**: Upload local images + convert format ✅
 
 **🚧 TRONG TƯƠNG LAI**: Multi-file sync, hierarchy, state management
-
-## 📞 Contact/Support Info
-
-- Confluence instance: https://f8a.atlassian.net
-- Test space: Core CEX
-- Last successful sync: Page ID 45514832 (Tutorial Intro)
-- Development environment: Node.js v23.5.0, macOS
