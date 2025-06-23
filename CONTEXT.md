@@ -13,7 +13,8 @@ docuflu/
 │   └── docuflu.js                  # CLI entry point ✅
 ├── lib/
 │   ├── commands/
-│   │   └── sync.js                 # Sync command logic ✅  
+│   │   ├── sync.js                 # Sync command logic ✅
+│   │   └── init.js                 # Init command logic ✅  
 │   └── core/
 │       ├── confluence-client.js    # Confluence API wrapper ✅
 │       ├── markdown-parser.js      # Markdown to Confluence converter ✅
@@ -29,7 +30,8 @@ docuflu/
 │   ├── test-hierarchy.js          # Hierarchy structure test ✅
 │   ├── test-nested-hierarchy.js   # Nested hierarchy test ✅
 │   ├── test-internal-references.js # Internal reference processing test ✅
-│   └── test-mermaid.js            # Mermaid diagram processing test ✅
+│   ├── test-mermaid.js            # Mermaid diagram processing test ✅
+│   └── test-init.js               # Init command test ✅
 ├── docusaurus-example/            # Test data từ examples/
 │   ├── docs/
 │   │   ├── test-internal-links.md     # Internal reference test file ✅

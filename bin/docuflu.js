@@ -3,6 +3,7 @@
 const { Command } = require('commander');
 const chalk = require('chalk');
 const { syncFile, syncDocs, syncBlog } = require('../lib/commands/sync');
+const { initProject } = require('../lib/commands/init');
 
 const program = new Command();
 
@@ -40,6 +41,18 @@ program
         console.log('  docuflu sync --blog');
         process.exit(1);
       }
+    } catch (error) {
+      console.error(chalk.red('❌ Error:', error.message));
+      process.exit(1);
+    }
+  });
+
+program
+  .command('init')
+  .description('Initialize DocuFlu in current directory')
+  .action(async () => {
+    try {
+      await initProject();
     } catch (error) {
       console.error(chalk.red('❌ Error:', error.message));
       process.exit(1);

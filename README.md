@@ -65,6 +65,18 @@ npm link
 
 ### 2. Configuration
 
+#### Option A: Using init command (Recommended)
+
+```bash
+# Navigate to your Docusaurus project
+cd your-docusaurus-project
+
+# Initialize DocuFlu configuration
+docuflu init
+```
+
+#### Option B: Manual configuration
+
 Create a `.env` file in your Docusaurus project root:
 
 ```bash
@@ -105,6 +117,15 @@ docuflu sync --docs
 
 ### CLI Commands
 
+#### Initialize Configuration
+
+```bash
+# Setup DocuFlu in your project
+docuflu init
+
+# This creates .env file with template configuration
+```
+
 #### Sync All Documentation
 
 ```bash
@@ -142,15 +163,16 @@ docuflu --help
 docuflu sync --help
 ```
 
-### Command Options
+### Command Reference
 
-| Option | Description | Example |
-|--------|-------------|---------|
-| `--docs` | Sync all documentation files | `docuflu sync --docs` |
-| `--blog` | Sync blog posts (placeholder) | `docuflu sync --blog` |
-| `--file <path>` | Sync specific file | `docuflu sync --file docs/intro.md` |
-| `--dry-run` | Preview without changes | `docuflu sync --docs --dry-run` |
-| `--help` | Show help information | `docuflu --help` |
+| Command | Description | Example |
+|---------|-------------|---------|
+| `docuflu init` | Initialize configuration | `docuflu init` |
+| `docuflu sync --docs` | Sync all documentation files | `docuflu sync --docs` |
+| `docuflu sync --blog` | Sync blog posts (placeholder) | `docuflu sync --blog` |
+| `docuflu sync --file <path>` | Sync specific file | `docuflu sync --file docs/intro.md` |
+| `docuflu sync --dry-run` | Preview without changes | `docuflu sync --docs --dry-run` |
+| `docuflu --help` | Show help information | `docuflu --help` |
 
 ## 🔧 Configuration
 
