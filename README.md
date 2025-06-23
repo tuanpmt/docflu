@@ -14,6 +14,7 @@ DocuFlu CLI is a command-line tool that automatically syncs your Docusaurus mark
 - 📁 **Hierarchy preservation** - maintains your docs folder structure
 - 🔗 **Internal link processing** - converts relative links to Confluence URLs
 - 🖼️ **Image handling** - uploads and processes images automatically
+- 🎨 **Mermaid diagrams** - converts Mermaid code blocks to images
 - ⚡ **Incremental sync** - only syncs changed files
 - 🎯 **Dry-run mode** - preview changes before applying
 - 📊 **Detailed statistics** - track sync progress and results
@@ -230,6 +231,56 @@ DocuFlu processes images automatically:
 4. **Conversion** - Update HTML to reference Confluence attachments
 5. **Caching** - Avoid duplicate uploads
 
+## 🎨 Mermaid Diagram Support
+
+DocuFlu automatically converts Mermaid diagrams to images:
+
+### Supported Diagram Types
+
+- **Flowcharts**: `graph TD`, `graph LR`
+- **Sequence diagrams**: `sequenceDiagram`
+- **Class diagrams**: `classDiagram`
+- **State diagrams**: `stateDiagram`
+- **Entity relationship**: `erDiagram`
+- **User journey**: `journey`
+- **Gantt charts**: `gantt`
+
+### Mermaid Processing Flow
+
+1. **Detection** - Find Mermaid code blocks in markdown
+2. **Auto-install** - Install Mermaid CLI if not available
+3. **Generation** - Convert Mermaid code to PNG images
+4. **Upload** - Upload generated images to Confluence
+5. **Conversion** - Replace code blocks with image attachments
+6. **Cleanup** - Remove temporary files
+
+### Example Conversion
+
+```markdown
+<!-- Before (Docusaurus) -->
+```mermaid
+graph TD
+    A[Start] --> B{Is it?}
+    B -->|Yes| C[OK]
+    B -->|No| E[End]
+```
+
+<!-- After (Confluence) -->
+[Centered PNG image with diagram visualization]
+```
+
+### Mermaid CLI Installation
+
+DocuFlu automatically installs Mermaid CLI when needed:
+
+```bash
+# Automatic installation (no action required)
+npm install -g @mermaid-js/mermaid-cli
+
+# Manual installation (optional)
+npm install -g @mermaid-js/mermaid-cli
+```
+
 ## 📁 Directory Structure
 
 Your Docusaurus project structure is preserved in Confluence:
@@ -273,6 +324,7 @@ Failed: 0
 
 🔗 Internal Links: 45 converted, 12 external preserved
 📷 Images: 8 uploaded, 3 cached, 2 external URLs
+🎨 Mermaid Diagrams: 5 processed, 0 failed
 ⏱️ Duration: 1m 23s
 ```
 
@@ -389,12 +441,14 @@ DEBUG=1 docuflu sync --docs
 - ✅ Multi-file sync with hierarchy
 - ✅ Internal reference processing
 - ✅ Image handling
+- ✅ Mermaid diagram processing
 - ✅ State management
 - ✅ Auto migration
 
 ### Phase 3: Advanced Features 🔄
 - ❌ Blog post synchronization
 - ❌ Advanced Docusaurus syntax (admonitions, tabs)
+- ❌ Math equation processing (LaTeX)
 - ❌ Global npm installation
 - ❌ Bi-directional sync
 - ❌ Real-time collaboration

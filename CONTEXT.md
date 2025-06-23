@@ -230,6 +230,22 @@ node bin/docuflu.js sync --file docs/test-internal-links.md
 - **Error Handling**: Graceful handling với detailed error messages
 - **Integration**: Seamless integration với StateManager.init()
 
+### 13. `/lib/core/mermaid-processor.js` - Mermaid Diagram Processing ✅ NEW
+- **Diagram Detection**: Extract Mermaid code blocks từ markdown content
+- **Auto Installation**: Install @mermaid-js/mermaid-cli if not available
+- **Image Generation**: Convert Mermaid code to PNG images (800x600)
+- **Confluence Upload**: Upload generated images as page attachments
+- **Content Conversion**: Replace code blocks với Confluence image format
+- **Cleanup**: Remove temporary files after processing
+- **Error Handling**: Graceful fallback to code blocks if processing fails
+
+### 14. `/test/test-mermaid.js` - Mermaid Processing Test ✅ NEW
+- **Mock Confluence Client**: Test diagram processing without real API calls
+- **Diagram Extraction**: Test detection of multiple Mermaid diagrams
+- **CLI Availability**: Check for Mermaid CLI installation
+- **Content Conversion**: Test before/after markdown transformation
+- **Statistics**: Verify processing stats (processed, failed counts)
+
 ## 🎯 Latest Achievements (Phase 2+)
 
 ### State Directory Migration ✅ NEW
@@ -239,8 +255,16 @@ node bin/docuflu.js sync --file docs/test-internal-links.md
 - **Seamless Transition**: Không mất dữ liệu, hoạt động transparently
 - **Integration**: Tận dụng `.docusaurus/` folder có sẵn của Docusaurus
 
-### Internal Reference Processing ✅ COMPLETED
-- **20 implemented features** (was 17, +3 new including migration)
+### Mermaid Diagram Processing ✅ NEW
+- **21 implemented features** (was 20, +1 new Mermaid support)
+- **Auto-install**: Automatically install @mermaid-js/mermaid-cli when needed
+- **Diagram Support**: Flowcharts, sequence, class, state, ER, journey, gantt
+- **Image Generation**: Convert Mermaid code to 800x600 PNG images
+- **Confluence Integration**: Upload images as attachments với proper formatting
+- **Processing Stats**: Track processed/failed diagram counts
+- **Cleanup**: Automatic temp file cleanup after processing
+
+### Internal Reference Processing ✅ COMPLETED  
 - **Link Types Supported**: 
   - ✅ Relative links: `./file.md`, `../file.md`
   - ✅ Absolute links: `/docs/file`, `/docs/category/file`
@@ -378,8 +402,8 @@ node bin/docuflu.js sync --docs  # Second run: 8 skipped (no changes)
 **✅ Phase 2 Complete**: Multi-file sync với hierarchy support  
 **🎯 Phase 3 Next**: Blog sync, advanced features, global installation
 
-**Total Files Created**: 9 core files + 3 test files  
-**Total Features**: 17 implemented features  
+**Total Files Created**: 10 core files + 4 test files  
+**Total Features**: 21 implemented features  
 **Test Coverage**: Basic parser, hierarchy structure, nested hierarchy  
 **Production Ready**: ✅ Có thể sync Docusaurus projects lên Confluence với proper hierarchy
 
