@@ -79,7 +79,7 @@ npx docuflu sync
   },
   "dependencies": {
     "confluence-api": "^1.7.0",
-    "marked": "^4.3.0", 
+    "markdown-it": "^13.0.1",
     "gray-matter": "^4.0.3",
     "fs-extra": "^11.1.1",
     "commander": "^9.4.1",
@@ -97,6 +97,7 @@ npx docuflu sync
 - `docuflu sync` - Đồng bộ toàn bộ
 - `docuflu sync --docs` - Chỉ sync docs/
 - `docuflu sync --blog` - Chỉ sync blog/
+- `docuflu sync --file <path>` - Đồng bộ 1 file markdown cụ thể
 - `docuflu status` - Xem trạng thái sync
 - `docuflu --help` - Hiển thị help
 
@@ -106,12 +107,14 @@ npx docuflu sync
 - Parse frontmatter và metadata với gray-matter
 - Build hierarchy tree từ sidebars.ts
 - Detect changes so với .docuflu/sync-state.json
+- **Single file mode**: Validate và process 1 file cụ thể
 
-#### 3.3.3 Markdown Parser
-- Convert markdown to Confluence Storage Format
+#### 3.3.3 Markdown Parser (markdown-it)
+- Convert markdown to Confluence Storage Format với markdown-it
 - Handle Docusaurus-specific syntax (admonitions, code blocks)
-- Process images, links, internal references
+- Process images, links, internal references với plugins
 - Preserve formatting và structure
+- **Plugin ecosystem**: markdown-it-container, markdown-it-anchor, markdown-it-attrs
 
 #### 3.3.4 State Management
 - Track page IDs, timestamps trong .docuflu/sync-state.json
@@ -171,16 +174,17 @@ DOCUFLU_RETRY_COUNT=3
 4. 🚀 Implement confluence-client.js wrapper
 
 ### Phase 3: Content Processing (Ngày 2 - Sáng)
-1. 🚀 Build markdown-parser.js với Confluence format
-2. 🚀 Handle Docusaurus-specific syntax
+1. 🚀 Build markdown-parser.js với markdown-it + Confluence format
+2. 🚀 Setup markdown-it plugins cho Docusaurus syntax
 3. 🚀 Implement image và asset processing
 4. 🚀 Create page hierarchy mapping
 
 ### Phase 4: Commands Implementation (Ngày 2 - Chiều)
 1. 🚀 Implement `docuflu init` command
-2. 🚀 Build `docuflu sync` với options (--docs, --blog, --dry-run)
+2. 🚀 Build `docuflu sync` với options (--docs, --blog, --file, --dry-run)
 3. 🚀 Create `docuflu status` command
-4. 🚀 Add colored logging với chalk và ora spinners
+4. 🚀 Add file validation cho single file sync
+5. 🚀 Add colored logging với chalk và ora spinners
 
 ### Phase 5: Testing & Polish (Ngày 2 - Tối)
 1. 🚀 Test với real Docusaurus project
@@ -222,11 +226,16 @@ docuflu sync
 docuflu sync --docs
 docuflu sync --blog
 
+# Sync single file
+docuflu sync --file docs/intro.md
+docuflu sync --file blog/2023-01-01-hello.md
+
 # Check sync status
 docuflu status
 
 # Dry run (preview changes)
 docuflu sync --dry-run
+docuflu sync --file docs/intro.md --dry-run
 
 # Help
 docuflu --help
@@ -234,6 +243,8 @@ docuflu sync --help
 ```
 
 ### 5.4 Output Examples
+
+#### 5.4.1 Full Sync
 ```bash
 $ docuflu sync
 ✓ Scanning Docusaurus project...
@@ -248,6 +259,19 @@ $ docuflu sync
 Stats: 5 processed, 3 created, 2 updated, 18 skipped
 ```
 
+#### 5.4.2 Single File Sync
+```bash
+$ docuflu sync --file docs/intro.md
+✓ Validating file path: docs/intro.md
+✓ Parsing markdown content...
+✓ Loading sync state from .docuflu/
+✓ Connecting to Confluence...
+✓ Updating page "Introduction"...
+✓ File synced successfully in 2.1s
+
+Stats: 1 processed, 0 created, 1 updated, 0 skipped
+```
+
 ## 6. Error Handling
 
 ### 6.1 Common Scenarios
@@ -256,6 +280,7 @@ Stats: 5 processed, 3 created, 2 updated, 18 skipped
 - API rate limiting
 - Invalid markdown syntax
 - Missing images/assets
+- **Single file sync**: File không tồn tại, path sai format
 
 ### 6.2 Recovery Strategies
 - Retry logic với exponential backoff
