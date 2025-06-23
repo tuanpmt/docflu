@@ -22,12 +22,14 @@ docuflu/
 │       ├── docusaurus-scanner.js   # Docusaurus project scanner ✅
 │       ├── state-manager.js       # .docusaurus/ state management ✅
 │       ├── reference-processor.js  # Internal reference processing ✅
+│       ├── mermaid-processor.js    # Mermaid diagram processing ✅
 │       └── migrate-state.js       # .docuflu/ → .docusaurus/ migration ✅
 ├── test/
 │   ├── test-basic.js              # Basic markdown parser test ✅
 │   ├── test-hierarchy.js          # Hierarchy structure test ✅
 │   ├── test-nested-hierarchy.js   # Nested hierarchy test ✅
-│   └── test-internal-references.js # Internal reference processing test ✅
+│   ├── test-internal-references.js # Internal reference processing test ✅
+│   └── test-mermaid.js            # Mermaid diagram processing test ✅
 ├── docusaurus-example/            # Test data từ examples/
 │   ├── docs/
 │   │   ├── test-internal-links.md     # Internal reference test file ✅
@@ -51,6 +53,7 @@ docuflu/
   "ora": "^5.4.1",            // Spinner loading (v5 for CommonJS)
   "form-data": "^4.0.0",      // Image upload support ✅
   "mime-types": "^2.1.35"     // MIME type detection ✅
+  "@mermaid-js/mermaid-cli": "^10.6.1" // Mermaid diagram generation ✅
 }
 ```
 
@@ -239,7 +242,19 @@ node bin/docuflu.js sync --file docs/test-internal-links.md
 - **Cleanup**: Remove temporary files after processing
 - **Error Handling**: Graceful fallback to code blocks if processing fails
 
-### 14. `/test/test-mermaid.js` - Mermaid Processing Test ✅ NEW
+### 14. `/lib/core/mermaid-processor.js` - Mermaid Diagram Processor ✅ NEW
+- **Diagram Detection**: Extract Mermaid code blocks từ markdown content
+- **Auto-install CLI**: Automatically install @mermaid-js/mermaid-cli if not available
+- **SVG Generation**: Convert Mermaid code to high-quality SVG images (800x600)
+- **Confluence Upload**: Upload generated SVG images as page attachments
+- **Content Replacement**: Replace code blocks với Confluence image format
+- **HTML Entity Handling**: Unescape HTML entities for proper ID matching
+- **Processing Flow**: Mermaid processing after HTML conversion for proper integration
+- **Error Handling**: Graceful fallback to code blocks if processing fails
+- **Cleanup**: Automatic temp file cleanup after processing
+- **Statistics**: Track processed/failed diagram counts
+
+### 15. `/test/test-mermaid.js` - Mermaid Processing Test ✅ NEW
 - **Mock Confluence Client**: Test diagram processing without real API calls
 - **Diagram Extraction**: Test detection of multiple Mermaid diagrams
 - **CLI Availability**: Check for Mermaid CLI installation
@@ -259,8 +274,10 @@ node bin/docuflu.js sync --file docs/test-internal-links.md
 - **21 implemented features** (was 20, +1 new Mermaid support)
 - **Auto-install**: Automatically install @mermaid-js/mermaid-cli when needed
 - **Diagram Support**: Flowcharts, sequence, class, state, ER, journey, gantt
-- **Image Generation**: Convert Mermaid code to 800x600 PNG images
-- **Confluence Integration**: Upload images as attachments với proper formatting
+- **SVG Generation**: Convert Mermaid code to high-quality SVG images (800x600)
+- **Vector Quality**: Scalable graphics with crisp edges at any zoom level
+- **File Size Optimization**: SVG format provides smaller file sizes than PNG
+- **Confluence Integration**: Upload SVG images as attachments với proper formatting
 - **Processing Stats**: Track processed/failed diagram counts
 - **Cleanup**: Automatic temp file cleanup after processing
 

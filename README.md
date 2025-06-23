@@ -14,7 +14,7 @@ DocuFlu CLI is a command-line tool that automatically syncs your Docusaurus mark
 - 📁 **Hierarchy preservation** - maintains your docs folder structure
 - 🔗 **Internal link processing** - converts relative links to Confluence URLs
 - 🖼️ **Image handling** - uploads and processes images automatically
-- 🎨 **Mermaid diagrams** - converts Mermaid code blocks to images
+- 🎨 **Mermaid diagrams** - converts Mermaid code blocks to high-quality SVG images
 - ⚡ **Incremental sync** - only syncs changed files
 - 🎯 **Dry-run mode** - preview changes before applying
 - 📊 **Detailed statistics** - track sync progress and results
@@ -249,9 +249,9 @@ DocuFlu automatically converts Mermaid diagrams to images:
 
 1. **Detection** - Find Mermaid code blocks in markdown
 2. **Auto-install** - Install Mermaid CLI if not available
-3. **Generation** - Convert Mermaid code to PNG images
-4. **Upload** - Upload generated images to Confluence
-5. **Conversion** - Replace code blocks with image attachments
+3. **Generation** - Convert Mermaid code to high-quality SVG images
+4. **Upload** - Upload generated SVG images to Confluence
+5. **Conversion** - Replace code blocks with scalable image attachments
 6. **Cleanup** - Remove temporary files
 
 ### Example Conversion
@@ -266,7 +266,7 @@ graph TD
 ```
 
 <!-- After (Confluence) -->
-[Centered PNG image with diagram visualization]
+[Centered SVG image with scalable diagram visualization]
 ```
 
 ### Mermaid CLI Installation
@@ -324,7 +324,7 @@ Failed: 0
 
 🔗 Internal Links: 45 converted, 12 external preserved
 📷 Images: 8 uploaded, 3 cached, 2 external URLs
-🎨 Mermaid Diagrams: 5 processed, 0 failed
+🎨 Mermaid Diagrams: 5 SVG images processed, 0 failed
 ⏱️ Duration: 1m 23s
 ```
 
