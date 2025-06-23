@@ -1,14 +1,18 @@
 {
   "name": "docuflu",
-  "version": "0.1.0",
-  "description": "CLI tool to sync Docusaurus content to Confluence",
-  "main": "index.js",
+  "version": "1.0.0",
+  "description": "CLI tool to sync Docusaurus documentation to Confluence with hierarchy, internal links, and Mermaid diagram support",
+  "main": "bin/docuflu.js",
   "bin": {
     "docuflu": "./bin/docuflu.js"
   },
   "scripts": {
     "test": "node test/test-basic.js",
-    "test:mermaid": "node test/test-mermaid.js"
+    "test:hierarchy": "node test/test-hierarchy.js",
+    "test:mermaid": "node test/test-mermaid.js",
+    "test:references": "node test/test-internal-references.js",
+    "test:migration": "node test/test-migration.js",
+    "test:all": "npm run test && npm run test:hierarchy && npm run test:mermaid && npm run test:references && npm run test:migration"
   },
   "dependencies": {
     "axios": "^1.6.0",
@@ -25,13 +29,40 @@
   "optionalDependencies": {
     "@mermaid-js/mermaid-cli": "^10.6.1"
   },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "files": [
+    "bin/",
+    "lib/",
+    "env.example",
+    "README.md",
+    "LICENSE"
+  ],
   "keywords": [
     "docusaurus",
     "confluence",
     "markdown",
     "sync",
-    "cli"
+    "cli",
+    "documentation",
+    "mermaid",
+    "diagrams",
+    "atlassian",
+    "docs"
   ],
-  "author": "",
-  "license": "MIT"
+  "author": {
+    "name": "Tuan Pham",
+    "email": "tuanpmt@example.com",
+    "url": "https://github.com/tuanpmt"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tuanpmt/docuflu.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tuanpmt/docuflu/issues"
+  },
+  "homepage": "https://github.com/tuanpmt/docuflu#readme"
 }

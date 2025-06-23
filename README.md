@@ -39,15 +39,27 @@ DocuFlu CLI is a command-line tool that automatically syncs your Docusaurus mark
 
 ### 1. Installation
 
+#### Option A: Install from npm (Recommended)
+
+```bash
+# Install globally from npm
+npm install -g docuflu
+
+# Verify installation
+docuflu --version
+```
+
+#### Option B: Install from source (Development)
+
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/docuflu.git
+git clone https://github.com/tuanpmt/docuflu.git
 cd docuflu
 
 # Install dependencies
 npm install
 
-# Make CLI globally accessible (optional)
+# Make CLI globally accessible
 npm link
 ```
 
@@ -83,10 +95,10 @@ DOCUFLU_RETRY_COUNT=3
 cd your-docusaurus-project
 
 # Preview what will be synced (dry-run)
-node path/to/docuflu/bin/docuflu.js sync --docs --dry-run
+docuflu sync --docs --dry-run
 
 # Perform the actual sync
-node path/to/docuflu/bin/docuflu.js sync --docs
+docuflu sync --docs
 ```
 
 ## 📖 Usage
@@ -371,15 +383,119 @@ docuflu/
 └── README.md                       # This file
 ```
 
+### Local Development Setup
+
+1. **Clone and Setup**
+   ```bash
+   # Clone the repository
+   git clone https://github.com/tuanpmt/docuflu.git
+   cd docuflu
+   
+   # Install dependencies
+   npm install
+   
+   # Link for local development
+   npm link
+   ```
+
+2. **Test Your Changes**
+   ```bash
+   # Run all tests
+   npm test
+   
+   # Test with real Docusaurus project
+   cd path/to/your/docusaurus-project
+   docuflu sync --docs --dry-run
+   ```
+
+3. **Code Structure**
+   - `bin/docuflu.js` - CLI entry point
+   - `lib/commands/` - Command implementations
+   - `lib/core/` - Core functionality modules
+   - `test/` - Test files and examples
+
+### Publishing to npm
+
+For maintainers who want to publish new versions:
+
+#### Prerequisites
+- npm account with publishing permissions
+- Access to `docuflu` package on npm
+- Clean working directory (no uncommitted changes)
+
+#### Publishing Steps
+
+1. **Update Version**
+   ```bash
+   # Update version in package.json (semantic versioning)
+   npm version patch   # 1.0.0 → 1.0.1 (bug fixes)
+   npm version minor   # 1.0.0 → 1.1.0 (new features)
+   npm version major   # 1.0.0 → 2.0.0 (breaking changes)
+   ```
+
+2. **Build and Test**
+   ```bash
+   # Run all tests
+   npm test
+   
+   # Test CLI functionality
+   npm link
+   docuflu --version
+   
+   # Test with example project
+   cd docusaurus-example
+   docuflu sync --docs --dry-run
+   ```
+
+3. **Publish to npm**
+   ```bash
+   # Login to npm (if not already logged in)
+   npm login
+   
+   # Publish the package
+   npm publish
+   
+   # For beta releases
+   npm publish --tag beta
+   ```
+
+4. **Post-Publication**
+   ```bash
+   # Push version tag to GitHub
+   git push origin main --tags
+   
+   # Create GitHub release
+   # Go to: https://github.com/tuanpmt/docuflu/releases/new
+   ```
+
+#### Version Strategy
+- **Patch** (1.0.x): Bug fixes, small improvements
+- **Minor** (1.x.0): New features, backward compatible
+- **Major** (x.0.0): Breaking changes, API changes
+
+#### Pre-release Testing
+```bash
+# Test installation from npm
+npm unlink docuflu  # Remove local link
+npm install -g docuflu@latest
+docuflu --version
+
+# Test with clean environment
+cd /tmp
+mkdir test-docuflu && cd test-docuflu
+# Test commands here
+```
+
 ### Contributing
 
 1. Fork the repository
 2. Create a feature branch: `git checkout -b feature/amazing-feature`
 3. Make your changes and add tests
 4. Run tests: `npm test`
-5. Commit changes: `git commit -m 'Add amazing feature'`
-6. Push to branch: `git push origin feature/amazing-feature`
-7. Open a Pull Request
+5. Update documentation if needed
+6. Commit changes: `git commit -m 'Add amazing feature'`
+7. Push to branch: `git push origin feature/amazing-feature`
+8. Open a Pull Request
 
 ### Dependencies
 
@@ -394,6 +510,17 @@ docuflu/
 ## 🚨 Troubleshooting
 
 ### Common Issues
+
+#### Installation Issues
+
+```bash
+❌ npm ERR! 404 Not Found - GET https://registry.npmjs.org/docuflu
+```
+**Solution**: Package may not be published yet. Use installation from source:
+```bash
+git clone https://github.com/tuanpmt/docuflu.git
+cd docuflu && npm install && npm link
+```
 
 #### Authentication Failed
 ```bash
@@ -430,8 +557,8 @@ DEBUG=1 docuflu sync --docs
 ### Getting Help
 
 - 📖 Check this README for common solutions
-- 🐛 [Open an issue](https://github.com/your-username/docuflu/issues) for bugs
-- 💡 [Start a discussion](https://github.com/your-username/docuflu/discussions) for questions
+- 🐛 [Open an issue](https://github.com/tuanpmt/docuflu/issues) for bugs
+- 💡 [Start a discussion](https://github.com/tuanpmt/docuflu/discussions) for questions
 - 📧 Contact the maintainers for support
 
 ## 📈 Roadmap
@@ -474,8 +601,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Support
 
 - **Documentation**: This README and inline code comments
-- **Issues**: [GitHub Issues](https://github.com/your-username/docuflu/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/your-username/docuflu/discussions)
+- **Issues**: [GitHub Issues](https://github.com/tuanpmt/docuflu/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/tuanpmt/docuflu/discussions)
 - **Email**: [maintainer@example.com](mailto:maintainer@example.com)
 
 ---
