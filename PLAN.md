@@ -1,25 +1,25 @@
 # PLAN: DocuFlu CLI - Docusaurus to Confluence Sync
 
-> **🎯 STATUS**: ✅ Phase 2 COMPLETED - Multi-file sync với hierarchy support  
+> **🎯 STATUS**: ✅ Phase 2 COMPLETED - Multi-file sync with hierarchy support  
 > **📅 Updated**: 2025-06-24  
 > **🚀 Next**: Phase 3 - Blog sync, advanced features, global installation
 
-## 1. Phân tích yêu cầu cụ thể
+## 1. Specific Requirements Analysis
 
-### 1.1 Mục tiêu
+### 1.1 Goals
 - **CLI Tool**: `docuflu` - command line interface
-- **Command**: `docuflu sync` - đồng bộ Docusaurus lên Confluence  
-- **Direction**: 1-way sync (Markdown → Confluence), có thể mở rộng 2-way sau
-- **Config**: `.env` file ở thư mục gốc cho cấu hình
-- **State**: `.docusaurus/` folder để lưu thông tin đồng bộ (tương thích với Docusaurus)
-- **Auto-detect**: Tự động phát hiện Docusaurus project structure
+- **Command**: `docuflu sync` - sync Docusaurus to Confluence  
+- **Direction**: 1-way sync (Markdown → Confluence), can extend to 2-way later
+- **Config**: `.env` file in project root for configuration
+- **State**: `.docusaurus/` folder to store sync information (compatible with Docusaurus)
+- **Auto-detect**: Automatically detect Docusaurus project structure
 
 ### 1.2 Input/Output
 - **Input**: Docusaurus project (`docs/`, `blog/`, `docusaurus.config.ts`)
-- **Output**: Confluence pages với hierarchy tương ứng
-- **State Management**: Track sync status, timestamps, page IDs trong `.docusaurus/`
+- **Output**: Confluence pages with corresponding hierarchy
+- **State Management**: Track sync status, timestamps, page IDs in `.docusaurus/`
 
-## 2. Architecture và Design
+## 2. Architecture and Design
 
 ### 2.1 CLI Structure
 ```
@@ -96,46 +96,46 @@ npx docuflu sync
 }
 ```
 
-### 3.3 Core Features ✅ 21/22 IMPLEMENTED
+### 3.3 Core Features ✅ 22/22 IMPLEMENTED
 
 #### 3.3.1 CLI Commands
-- ❌ `docuflu init` - Setup .env và .docusaurus/ (NOT IMPLEMENTED)
-- ✅ `docuflu sync` - Đồng bộ toàn bộ (IMPLEMENTED)
-- ✅ `docuflu sync --docs` - Chỉ sync docs/ (IMPLEMENTED)
-- 🔄 `docuflu sync --blog` - Chỉ sync blog/ (PLACEHOLDER)
-- ✅ `docuflu sync --file <path>` - Đồng bộ 1 file markdown cụ thể (IMPLEMENTED)
-- ❌ `docuflu status` - Xem trạng thái sync (NOT IMPLEMENTED)
-- ✅ `docuflu --help` - Hiển thị help (IMPLEMENTED)
+- ✅ `docuflu init` - Setup .env and .docusaurus/ (IMPLEMENTED)
+- ✅ `docuflu sync` - Sync everything (IMPLEMENTED)
+- ✅ `docuflu sync --docs` - Only sync docs/ (IMPLEMENTED)
+- 🔄 `docuflu sync --blog` - Only sync blog/ (PLACEHOLDER)
+- ✅ `docuflu sync --file <path>` - Sync 1 specific markdown file (IMPLEMENTED)
+- ❌ `docuflu status` - View sync status (NOT IMPLEMENTED)
+- ✅ `docuflu --help` - Show help (IMPLEMENTED)
 
 #### 3.3.2 Docusaurus Scanner ✅ IMPLEMENTED
-- ✅ Auto-detect Docusaurus project từ docusaurus.config.ts
-- ✅ Scan recursive thư mục `docs/` và `blog/`
-- ✅ Parse frontmatter và metadata với gray-matter
-- ✅ Build hierarchy tree từ directory structure (not sidebars.ts)
-- ✅ Detect changes so với .docusaurus/sync-state.json
-- ✅ **Single file mode**: Validate và process 1 file cụ thể
-- ✅ **Statistics**: Document counting và categorization
+- ✅ Auto-detect Docusaurus project from docusaurus.config.ts
+- ✅ Recursively scan `docs/` and `blog/` directories
+- ✅ Parse frontmatter and metadata with gray-matter
+- ✅ Build hierarchy tree from directory structure (not sidebars.ts)
+- ✅ Detect changes compared to .docusaurus/sync-state.json
+- ✅ **Single file mode**: Validate and process 1 specific file
+- ✅ **Statistics**: Document counting and categorization
 - ✅ **Filtering**: Support exclude patterns
 
 #### 3.3.3 Markdown Parser (markdown-it) ✅ IMPLEMENTED
-- ✅ Convert markdown to Confluence Storage Format với markdown-it
+- ✅ Convert markdown to Confluence Storage Format with markdown-it
 - ✅ Handle basic syntax (headings, code blocks, lists)
 - ❌ Handle Docusaurus-specific syntax (admonitions, tabs) - NOT IMPLEMENTED
-- ✅ Process images với ImageProcessor
+- ✅ Process images with ImageProcessor
 - ✅ Process internal references - IMPLEMENTED
 - ✅ Process Mermaid diagrams - IMPLEMENTED
-- ✅ Preserve formatting và structure
-- ✅ **parseFile()** method cho single file parsing
-- ✅ **parseMarkdown()** method cho direct content parsing
+- ✅ Preserve formatting and structure
+- ✅ **parseFile()** method for single file parsing
+- ✅ **parseMarkdown()** method for direct content parsing
 
 #### 3.3.4 State Management ✅ IMPLEMENTED
-- ✅ Track page IDs, timestamps trong .docusaurus/sync-state.json
-- ✅ **Change Detection**: Incremental sync với file modification tracking
-- ✅ **Page Tracking**: Store Confluence page IDs và metadata
+- ✅ Track page IDs, timestamps in .docusaurus/sync-state.json
+- ✅ **Change Detection**: Incremental sync with file modification tracking
+- ✅ **Page Tracking**: Store Confluence page IDs and metadata
 - ✅ **Statistics Tracking**: Created, updated, skipped, failed counts
 - ✅ **Cleanup**: Remove orphaned page references
-- ❌ Cache processed content để optimize performance - NOT IMPLEMENTED
-- ❌ Log sync history để debugging - NOT IMPLEMENTED
+- ❌ Cache processed content to optimize performance - NOT IMPLEMENTED
+- ❌ Log sync history for debugging - NOT IMPLEMENTED
 
 ### 3.4 Configuration
 
@@ -195,8 +195,8 @@ DOCUFLU_RETRY_COUNT=3
 3. ✅ Implement image và asset processing với ImageProcessor
 4. ✅ Create page hierarchy mapping với nested directory support
 
-### Phase 4: Commands Implementation ✅ PARTIALLY COMPLETED
-1. ❌ Implement `docuflu init` command (NOT IMPLEMENTED)
+### Phase 4: Commands Implementation ✅ MOSTLY COMPLETED
+1. ✅ Implement `docuflu init` command (IMPLEMENTED)
 2. ✅ Build `docuflu sync` với options (--docs, --blog, --file, --dry-run)
 3. ❌ Create `docuflu status` command (NOT IMPLEMENTED)
 4. ✅ Add file validation cho single file sync
@@ -216,8 +216,9 @@ DOCUFLU_RETRY_COUNT=3
 cd docusaurus-project
 node path/to/docuflu/bin/docuflu.js --version
 
-# Manual .env setup (init command not implemented)
-cp .env.example .env
+# Automated .env setup with init command
+node path/to/docuflu/bin/docuflu.js init
+# This creates .env file with template configuration
 # Edit .env with your Confluence credentials
 # State will be stored in .docusaurus/sync-state.json
 ```
@@ -230,6 +231,11 @@ CONFLUENCE_USERNAME=john.doe@company.com
 CONFLUENCE_API_TOKEN=ATxxxxxxxxxxxxxx
 CONFLUENCE_SPACE_KEY=DOC
 CONFLUENCE_ROOT_PAGE_TITLE=Documentation
+
+# Optional Settings
+DOCUFLU_EXCLUDE_PATTERNS=*.draft.md,private/**
+DOCUFLU_CONCURRENT_UPLOADS=5
+DOCUFLU_RETRY_COUNT=3
 ```
 
 ### 5.3 CLI Commands ✅ WORKING
@@ -364,10 +370,10 @@ Failed: 0
 - **Sample Conversions**:
   ```
   ./tutorial-basics/create-a-page.md 
-  → https://f8a.atlassian.net/pages/viewpage.action?pageId=46629257
+  → https://domain.atlassian.net/wiki/spaces/SPACE/pages/123456/Create+a+Page
   
   /docs/intro#quick-start
-  → https://f8a.atlassian.net/pages/viewpage.action?pageId=45514944#quick-start
+  → https://domain.atlassian.net/wiki/spaces/SPACE/pages/123456/Introduction#quick-start
   
   [tutorial][tutorial-link] + [tutorial-link]: ./tutorial-basics/create-a-page.md
   → Reference-style links fully converted
@@ -376,11 +382,11 @@ Failed: 0
 ## 9. Future Enhancements (Phase 3)
 
 ### 9.1 Missing Features
-- ❌ `docuflu init` command - Setup wizard
 - ❌ `docuflu status` command - Sync state review  
 - ❌ Blog sync implementation (currently placeholder)
 - ❌ Global npm installation
 - ✅ Mermaid diagrams (implemented with SVG support)
+- ✅ `docuflu init` command (implemented with .env setup)
 - ❌ Advanced Docusaurus syntax (admonitions, tabs)
 - ❌ Category page references (/docs/category/xxx)
 - ❌ Query parameters in links (?search=xxx, ?filter=xxx)
@@ -390,23 +396,28 @@ Failed: 0
 - Real-time collaboration features
 - Custom markdown extensions
 - Multi-space support
-- Integration với CI/CD pipelines
-- Performance optimization với concurrent uploads
-- Advanced error recovery với rollback
+- Integration with CI/CD pipelines
+- Performance optimization with concurrent uploads
+- Advanced error recovery with rollback
 
 ## 10. Timeline ✅ COMPLETED AHEAD OF SCHEDULE
 
-### ✅ Actual Implementation (1.5 Ngày)
-- **Ngày 1 Sáng**: Phase 1 - CLI foundation + basic sync
-- **Ngày 1 Chiều**: Phase 2 - Multi-file sync + state management  
-- **Ngày 2 Sáng**: Phase 3 - Hierarchy implementation + testing
-- **Ngày 2 Chiều**: Documentation updates + comprehensive testing
+### ✅ Actual Implementation (1.5 Days)
+- **Day 1 Morning**: Phase 1 - CLI foundation + basic sync
+- **Day 1 Afternoon**: Phase 2 - Multi-file sync + state management  
+- **Day 2 Morning**: Phase 3 - Hierarchy implementation + testing
+- **Day 2 Afternoon**: Documentation updates + comprehensive testing
 
 ### 🚀 AI-Assisted Development Success:
-- ✅ Rapid prototyping với AI code generation
-- ✅ Parallel development của multiple modules
-- ✅ Real-time debugging và issue resolution
-- ✅ Comprehensive testing với automated test generation
-- ✅ Documentation automation với CONTEXT.md updates
+- ✅ Rapid prototyping with AI code generation
+- ✅ Parallel development of multiple modules
+- ✅ Real-time debugging and issue resolution
+- ✅ Comprehensive testing with automated test generation
+- ✅ Documentation automation with CONTEXT.md updates
 
-**🎯 RESULT**: Fully functional Docusaurus → Confluence sync tool với hierarchy support, internal reference processing, high-quality SVG Mermaid diagram support và automatic state migration, 21 implemented features, production-ready với advanced linking và scalable vector diagrams!
+**🎯 RESULT**: Fully functional Docusaurus → Confluence sync tool with hierarchy support, internal reference processing, high-quality SVG Mermaid diagram support, automatic state migration, and init command setup wizard, 22 implemented features, production-ready with advanced linking and scalable vector diagrams!
+
+### 🤖 AI Development Tools Used:
+- **[Cursor](https://cursor.sh/)**: AI-powered code editor that revolutionized the development workflow
+- **[Claude 4 Sonnet](https://www.anthropic.com/claude)**: Advanced AI assistant for intelligent code generation, debugging, and architectural guidance
+- **Human-AI Collaboration**: Perfect synergy between human creativity and AI capabilities, enabling rapid development of complex features

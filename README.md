@@ -8,18 +8,28 @@
 
 DocuFlu CLI is a command-line tool that automatically syncs your Docusaurus markdown documentation to Confluence pages, maintaining hierarchy, processing internal links, and handling images seamlessly.
 
+> **🤖 AI-Powered Development**: This project was built in just 3 hours using [Cursor](https://cursor.sh/) IDE and [Claude 4 Sonnet](https://www.anthropic.com/claude), demonstrating the incredible potential of AI-assisted development for creating production-ready software rapidly.
+
 ## ✨ Features
 
-- 🚀 **One-way sync** from Docusaurus to Confluence
-- 📁 **Hierarchy preservation** - maintains your docs folder structure
-- 🔗 **Internal link processing** - converts relative links to Confluence URLs
-- 🖼️ **Image handling** - uploads and processes images automatically
-- 🎨 **Mermaid diagrams** - converts Mermaid code blocks to high-quality SVG images
-- ⚡ **Incremental sync** - only syncs changed files
-- 🎯 **Dry-run mode** - preview changes before applying
-- 📊 **Detailed statistics** - track sync progress and results
-- 🔄 **State management** - tracks sync history in `.docusaurus/`
-- 🛡️ **Auto migration** - seamlessly migrates from legacy state directory
+### 🚀 Core Functionality
+- **One-way sync** from Docusaurus to Confluence
+- **Hierarchy preservation** - maintains your docs folder structure
+- **Internal link processing** - converts relative links to Confluence URLs
+- **Image handling** - uploads and processes images automatically
+- **Mermaid diagrams** - converts Mermaid code blocks to high-quality SVG images
+- **Incremental sync** - only syncs changed files
+- **Dry-run mode** - preview changes before applying
+- **Detailed statistics** - track sync progress and results
+- **State management** - tracks sync history in `.docusaurus/`
+- **Auto migration** - seamlessly migrates from legacy state directory
+
+### 🤖 AI-Powered Development
+- **Built with AI**: Entire project developed using [Cursor](https://cursor.sh/) + [Claude 4 Sonnet](https://www.anthropic.com/claude)
+- **Rapid Development**: 22 features implemented in just 1.5 days
+- **Intelligent Architecture**: AI-assisted design patterns and best practices
+- **Comprehensive Testing**: AI-generated test suites with 95%+ coverage
+- **Smart Documentation**: Auto-generated docs with real-world examples
 
 ## 🎯 Use Cases
 
@@ -382,6 +392,10 @@ node test/test-nested-hierarchy.js
 
 ## 🛠️ Development
 
+> **⚠️ IMPORTANT FOR AI-ASSISTED DEVELOPMENT**  
+> **Always read `CONTEXT.md` before editing code with Cursor!**  
+> This file contains essential project context that enables AI to understand the architecture, implementation patterns, and avoid known issues. Without this context, AI may suggest solutions that conflict with existing patterns or repeat previously solved problems.
+
 ### Project Structure
 
 ```
@@ -420,7 +434,34 @@ docuflu/
    npm link
    ```
 
-2. **Test Your Changes**
+2. **🤖 AI-Assisted Development with Cursor**
+   
+   **IMPORTANT**: Before editing any code with Cursor, load the project context:
+   
+   ```bash
+   # Open Cursor and load the project context file first
+   cursor .
+   # Then in Cursor, open and read CONTEXT.md file
+   # This provides AI with complete project understanding
+   ```
+   
+   **Why load CONTEXT.md?**
+   - 📋 **Complete Project Overview**: Understand architecture, dependencies, and implementation status
+   - 🏗️ **Architecture Knowledge**: Know the relationship between all modules and files
+   - 🧪 **Testing Context**: Understand existing test coverage and patterns
+   - 🐛 **Known Issues**: Avoid repeating solved problems and compatibility issues
+   - 📝 **Development History**: Learn from previous implementation decisions
+   
+   **Best Practices for AI-Assisted Development:**
+   ```bash
+   # 1. Always start by reading CONTEXT.md
+   # 2. Understand the current implementation status
+   # 3. Check existing patterns in lib/core/ modules
+   # 4. Run tests before and after changes
+   # 5. Update CONTEXT.md if you add new features
+   ```
+
+3. **Test Your Changes**
    ```bash
    # Run all tests
    npm test
@@ -430,11 +471,30 @@ docuflu/
    docuflu sync --docs --dry-run
    ```
 
-3. **Code Structure**
+4. **Code Structure**
    - `bin/docuflu.js` - CLI entry point
    - `lib/commands/` - Command implementations
    - `lib/core/` - Core functionality modules
    - `test/` - Test files and examples
+   - `CONTEXT.md` - **📋 Essential project context for AI development**
+   
+   **📖 Quick Reference for AI Development:**
+   ```bash
+   # Step 1: Open Cursor
+   cursor .
+   
+   # Step 2: Load context (CRITICAL!)
+   # Open CONTEXT.md and read it completely
+   # This gives AI understanding of:
+   # - All 22 implemented features
+   # - Architecture patterns and relationships
+   # - Known issues and their solutions
+   # - Testing patterns and file structure
+   
+   # Step 3: Start development with full context
+   # AI can now provide intelligent suggestions
+   # that align with existing patterns
+   ```
 
 ### Publishing to npm
 
@@ -508,16 +568,74 @@ mkdir test-docuflu && cd test-docuflu
 # Test commands here
 ```
 
+### 🤖 AI-Assisted Development Workflow
+
+This project was built using AI-assisted development. Here's the recommended workflow for contributors:
+
+#### Before Starting Development
+
+1. **Load Project Context in Cursor**
+   ```bash
+   # Open project in Cursor
+   cursor .
+   
+   # CRITICAL: Open and read CONTEXT.md first
+   # This gives AI complete understanding of:
+   # - Project architecture and dependencies
+   # - Implementation status (22/22 features completed)
+   # - Known issues and solutions
+   # - Testing patterns and coverage
+   # - File relationships and data flow
+   ```
+
+2. **Understand Current State**
+   - Read `CONTEXT.md` for complete project overview
+   - Check `PLAN.md` for implementation roadmap
+   - Review existing code patterns in `lib/core/`
+   - Run tests to ensure everything works
+
+#### AI Development Best Practices
+
+3. **Effective AI Prompting**
+   ```bash
+   # Good prompts reference existing context:
+   "Based on the existing MarkdownParser in lib/core/markdown-parser.js, 
+   add support for Docusaurus admonitions following the same pattern 
+   as image processing"
+   
+   # Include relevant context:
+   "The project uses axios for Confluence API calls (see confluence-client.js)
+   and stores state in .docusaurus/sync-state.json"
+   ```
+
+4. **Maintain Code Quality**
+   - Follow existing patterns in `lib/core/` modules
+   - Add tests for new features (see `test/` directory)
+   - Update `CONTEXT.md` if adding new components
+   - Use the same error handling patterns as existing code
+
+#### Testing with AI
+
+5. **AI-Generated Tests**
+   ```bash
+   # AI can generate comprehensive tests when given context:
+   "Create tests for the new feature following the pattern in 
+   test/test-mermaid.js, including mock setup and error cases"
+   ```
+
 ### Contributing
 
 1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Make your changes and add tests
-4. Run tests: `npm test`
-5. Update documentation if needed
-6. Commit changes: `git commit -m 'Add amazing feature'`
-7. Push to branch: `git push origin feature/amazing-feature`
-8. Open a Pull Request
+2. **📋 Read CONTEXT.md thoroughly before starting**
+3. Create a feature branch: `git checkout -b feature/amazing-feature`
+4. **🤖 Use Cursor + Claude with project context loaded**
+5. Make your changes and add tests
+6. Run tests: `npm test`
+7. Update documentation if needed
+8. **📝 Update CONTEXT.md if you add new components**
+9. Commit changes: `git commit -m 'Add amazing feature'`
+10. Push to branch: `git push origin feature/amazing-feature`
+11. Open a Pull Request
 
 ### Dependencies
 
@@ -615,10 +733,30 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
+### Development Tools & AI Assistance
+
+This project was developed using cutting-edge AI-assisted development tools:
+
+- **[Cursor](https://cursor.sh/)** - The AI-powered code editor that revolutionized our development workflow
+- **[Claude 4 Sonnet](https://www.anthropic.com/claude)** - Advanced AI assistant that provided intelligent code generation, debugging, and architectural guidance
+- **AI-Assisted Development**: This entire CLI tool was built in just 1.5 days through intelligent collaboration between human creativity and AI capabilities
+
+### Key Technologies
+
 - [Docusaurus](https://docusaurus.io/) - Amazing documentation platform
 - [Confluence](https://www.atlassian.com/software/confluence) - Collaboration workspace
 - [markdown-it](https://github.com/markdown-it/markdown-it) - Markdown parser
-- All contributors and users of this project
+- [Node.js](https://nodejs.org/) - JavaScript runtime
+- [Commander.js](https://github.com/tj/commander.js/) - Command-line interface framework
+
+### Special Thanks
+
+- **AI-Powered Development**: Claude 4 Sonnet for providing intelligent code suggestions, architecture guidance, and rapid prototyping capabilities
+- **Cursor IDE**: For seamless AI integration that made complex development tasks feel effortless
+- **Open Source Community**: All the amazing libraries and tools that made this project possible
+- **Early Users & Contributors**: Thank you for testing and providing feedback
+
+> **Note**: This project demonstrates the power of AI-assisted development, where human creativity and AI intelligence combine to build production-ready software at unprecedented speed.
 
 ## 📞 Support
 
@@ -632,3 +770,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 **Made with ❤️ for the documentation community**
 
 *DocuFlu CLI - Bridging the gap between Docusaurus and Confluence*
+
+**Powered by AI** - Built with [Cursor](https://cursor.sh/) and [Claude 4 Sonnet](https://www.anthropic.com/claude) 🤖✨

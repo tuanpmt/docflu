@@ -1,11 +1,11 @@
 # DocuFlu CLI Development Context
 
-## 📋 Tóm tắt dự án
-- **Tên**: DocuFlu CLI - Docusaurus to Confluence Sync
-- **Mục tiêu**: CLI tool đồng bộ markdown files từ Docusaurus lên Confluence
-- **Trạng thái**: ✅ Phase 2+ hoàn thành - Multi-file sync với hierarchy support và internal reference processing
+## 📋 Project Summary
+- **Name**: DocuFlu CLI - Docusaurus to Confluence Sync
+- **Goal**: CLI tool to sync markdown files from Docusaurus to Confluence
+- **Status**: ✅ Phase 2+ Complete - Multi-file sync with hierarchy support and internal reference processing
 
-## 🗂️ Cấu trúc dự án đã tạo
+## 🗂️ Project Structure Created
 
 ```
 docuflu/
@@ -41,7 +41,7 @@ docuflu/
 └── PLAN.md                       # Original plan file ✅
 ```
 
-## 🔧 Dependencies đã cài đặt
+## 🔧 Dependencies Installed
 
 ```json
 {
@@ -59,16 +59,16 @@ docuflu/
 }
 ```
 
-## 📝 Changes từ PLAN.md ban đầu
+## 📝 Changes from Original PLAN.md
 
 ### 1. Dependencies Updates
-- ❌ `confluence-api: ^1.7.0` (không hoạt động, package cũ)
-- ✅ `axios: ^1.6.0` (thay thế để call Confluence REST API)
-- ✅ `chalk: ^4.1.2` (downgrade cho CommonJS compatibility) 
-- ✅ `ora: ^5.4.1` (downgrade cho CommonJS compatibility)
+- ❌ `confluence-api: ^1.7.0` (not working, outdated package)
+- ✅ `axios: ^1.6.0` (replacement for Confluence REST API calls)
+- ✅ `chalk: ^4.1.2` (downgraded for CommonJS compatibility) 
+- ✅ `ora: ^5.4.1` (downgraded for CommonJS compatibility)
 
 ### 2. Architecture Changes
-- **Confluence Client**: Sử dụng axios thay vì confluence-api package
+- **Confluence Client**: Using axios instead of confluence-api package
 - **REST API Endpoints**: 
   - Space info: `/wiki/rest/api/space/{spaceKey}`
   - Search pages: `/wiki/rest/api/content/search`
@@ -77,12 +77,12 @@ docuflu/
   - Get children: `/wiki/rest/api/content/{pageId}/child/page`
   - Upload attachment: `/wiki/rest/api/content/{pageId}/child/attachment`
 
-## 🧪 Testing đã thực hiện
+## 🧪 Testing Performed
 
 ### 1. Markdown Parser Test
 ```bash
 npm test
-# ✅ Parse docusaurus-example/docs/intro.md thành công
+# ✅ Successfully parsed docusaurus-example/docs/intro.md
 # ✅ Extract title: "Tutorial Intro"  
 # ✅ Content length: 2034 characters
 # ✅ Frontmatter: {"sidebar_position": 1}
@@ -116,140 +116,140 @@ node bin/docuflu.js sync --file docs/test-internal-links.md
 # ✅ URL Format: https://f8a.atlassian.net/wiki/spaces/CEX/pages/45514944/Tutorial+Intro
 ```
 
-## 🐛 Issues đã fix
+## 🐛 Issues Fixed
 
 ### 1. Package Compatibility Issues
-- **Lỗi**: `confluence-api@^1.7.0` không tồn tại
-- **Fix**: Thay bằng `axios` và implement REST API calls manually
+- **Error**: `confluence-api@^1.7.0` does not exist
+- **Fix**: Replaced with `axios` and implemented REST API calls manually
 
 ### 2. ESM/CommonJS Issues  
-- **Lỗi**: `chalk.red is not a function` (chalk v5+ dùng ESM)
-- **Fix**: Downgrade `chalk: ^4.1.2`
-- **Lỗi**: `ora is not a function` (ora v6+ dùng ESM)  
-- **Fix**: Downgrade `ora: ^5.4.1`
+- **Error**: `chalk.red is not a function` (chalk v5+ uses ESM)
+- **Fix**: Downgraded to `chalk: ^4.1.2`
+- **Error**: `ora is not a function` (ora v6+ uses ESM)  
+- **Fix**: Downgraded to `ora: ^5.4.1`
 
 ### 3. Confluence API Version Issue
-- **Lỗi**: `Cannot read properties of undefined (reading 'number')`
-- **Fix**: Thêm `expand: 'version'` trong search query
-- **Fix**: Thêm safety check `existingPage.version?.number || 1`
+- **Error**: `Cannot read properties of undefined (reading 'number')`
+- **Fix**: Added `expand: 'version'` in search query
+- **Fix**: Added safety check `existingPage.version?.number || 1`
 
 ### 4. Image Path Resolution Issue (Phase 2)
-- **Lỗi**: Docusaurus absolute paths `/img/docusaurus.png` không resolve được
-- **Fix**: Auto-detect Docusaurus project root từ `docusaurus.config.ts`
+- **Error**: Docusaurus absolute paths `/img/docusaurus.png` could not be resolved
+- **Fix**: Auto-detect Docusaurus project root from `docusaurus.config.ts`
 - **Fix**: Convert `/img/...` → `{projectRoot}/static/img/...`
 
 ### 5. Method Missing Issue (Phase 2)
-- **Lỗi**: `parser.parseMarkdown is not a function`
-- **Fix**: Thêm `parseMarkdown()` method vào MarkdownParser class
+- **Error**: `parser.parseMarkdown is not a function`
+- **Fix**: Added `parseMarkdown()` method to MarkdownParser class
 
-## 📁 Files đã tạo và nội dung
+## 📁 Files Created and Content
 
 ### 1. `/bin/docuflu.js` - CLI Entry Point
-- Commander.js setup với sync command
+- Commander.js setup with sync command
 - Options: `-f, --file <path>`, `--docs`, `--blog`, `--dry-run`
-- Error handling và colored output
-- Help messages với examples
+- Error handling and colored output
+- Help messages with examples
 
 ### 2. `/lib/core/markdown-parser.js` - Markdown Parser
-- Sử dụng markdown-it để convert MD → HTML
-- Parse frontmatter với gray-matter
-- Extract title từ frontmatter hoặc first heading
+- Uses markdown-it to convert MD → HTML
+- Parse frontmatter with gray-matter
+- Extract title from frontmatter or first heading
 - Basic Confluence Storage Format conversion (code blocks)
-- `parseFile()` method cho single file parsing
-- `parseMarkdown()` method cho direct content parsing
+- `parseFile()` method for single file parsing
+- `parseMarkdown()` method for direct content parsing
 
 ### 3. `/lib/core/confluence-client.js` - Confluence API Client
 - Axios-based REST API wrapper
-- Authentication với Basic Auth (username + API token)
+- Authentication with Basic Auth (username + API token)
 - Methods: testConnection, findPageByTitle, createPage, updatePage
 - **Hierarchy Support**: findOrCreateParentPage, getPageChildren
 - **Context-aware Search**: findPageByTitleAndParent
 - **Title Formatting**: formatCategoryTitle
-- Error handling với detailed messages
+- Error handling with detailed messages
 
 ### 4. `/lib/core/config.js` - Configuration Loader
-- Load .env files với dotenv
+- Load .env files with dotenv
 - Validate required environment variables
 - Create sample .env file method
-- Support cho optional settings
+- Support for optional settings
 
 ### 5. `/lib/commands/sync.js` - Sync Command Logic
 - **Single File Sync**: `syncFile()` function
-- **Multi-file Sync**: `syncDocs()` và `syncBlog()` functions
-- **Hierarchy Building**: Pre-create parent pages trước khi sync documents
-- **State-aware Processing**: Incremental sync với change detection (.docusaurus/)
-- Main sync workflow với ora spinner
-- Support dry-run mode với preview
-- Detailed success/error reporting với statistics
+- **Multi-file Sync**: `syncDocs()` and `syncBlog()` functions
+- **Hierarchy Building**: Pre-create parent pages before syncing documents
+- **State-aware Processing**: Incremental sync with change detection (.docusaurus/)
+- Main sync workflow with ora spinner
+- Support dry-run mode with preview
+- Detailed success/error reporting with statistics
 
 ### 6. `/test/test-basic.js` - Basic Testing
-- Test markdown parser với docusaurus-example file
+- Test markdown parser with docusaurus-example file
 - Validate parsing results
-- Console output với results preview
+- Console output with results preview
 
 ### 7. `/lib/core/image-processor.js` - Image Processor ✅
-- Extract images từ markdown với regex
-- Upload images lên Confluence attachments API
+- Extract images from markdown with regex
+- Upload images to Confluence attachments API
 - Convert HTML img tags → Confluence format  
-- Cache uploaded images để tránh duplicates
-- Handle both local files và external URLs
-- **Docusaurus Path Resolution**: Auto-detect project root cho `/img/...` paths
+- Cache uploaded images to avoid duplicates
+- Handle both local files and external URLs
+- **Docusaurus Path Resolution**: Auto-detect project root for `/img/...` paths
 - Two-stage process: create page → upload images → update page
 
 ### 8. `/lib/core/docusaurus-scanner.js` - Docusaurus Scanner ✅
-- **Project Detection**: Auto-detect từ `docusaurus.config.ts`
-- **Recursive Scanning**: Scan docs/ và blog/ directories
-- **Frontmatter Parsing**: Extract metadata với gray-matter
-- **Hierarchy Building**: Build parent-child relationships từ directory structure
-- **Statistics**: Document counting và categorization
+- **Project Detection**: Auto-detect from `docusaurus.config.ts`
+- **Recursive Scanning**: Scan docs/ and blog/ directories
+- **Frontmatter Parsing**: Extract metadata with gray-matter
+- **Hierarchy Building**: Build parent-child relationships from directory structure
+- **Statistics**: Document counting and categorization
 - **Filtering**: Support exclude patterns
 
 ### 9. `/lib/core/state-manager.js` - State Manager ✅
-- **State Persistence**: `.docusaurus/sync-state.json` management (tương thích với Docusaurus)
-- **Change Detection**: Track file modifications cho incremental sync
-- **Page Tracking**: Store Confluence page IDs và metadata
+- **State Persistence**: `.docusaurus/sync-state.json` management (compatible with Docusaurus)
+- **Change Detection**: Track file modifications for incremental sync
+- **Page Tracking**: Store Confluence page IDs and metadata
 - **Statistics Tracking**: Created, updated, skipped, failed counts
 - **Cleanup**: Remove orphaned page references
 
 ### 10. `/lib/core/reference-processor.js` - Internal Reference Processor ✅
-- **Link Detection**: Parse markdown, reference-style, và HTML links
-- **Path Resolution**: Resolve relative (./, ../), absolute (/docs/), và Docusaurus paths
-- **URL Conversion**: Convert internal links thành Confluence URLs
-- **Modern URL Format**: `/wiki/spaces/{SPACE}/pages/{ID}/{title}` thay vì legacy format
-- **Anchor Support**: Preserve #section links trong converted URLs
+- **Link Detection**: Parse markdown, reference-style, and HTML links
+- **Path Resolution**: Resolve relative (./, ../), absolute (/docs/), and Docusaurus paths
+- **URL Conversion**: Convert internal links to Confluence URLs
+- **Modern URL Format**: `/wiki/spaces/{SPACE}/pages/{ID}/{title}` instead of legacy format
+- **Anchor Support**: Preserve #section links in converted URLs
 - **Statistics**: Track internal vs external link counts
-- **Fuzzy Matching**: Smart path resolution với fallback strategies
+- **Fuzzy Matching**: Smart path resolution with fallback strategies
 
 ### 11. `/test/test-internal-references.js` - Reference Processing Test ✅
-- **Mock State Setup**: Create fake pages để test link resolution
-- **Link Statistics**: Test link counting và categorization
-- **URL Conversion**: Test các loại links (relative, absolute, anchors)
-- **Integration Test**: Test với MarkdownParser integration
+- **Mock State Setup**: Create fake pages to test link resolution
+- **Link Statistics**: Test link counting and categorization
+- **URL Conversion**: Test various link types (relative, absolute, anchors)
+- **Integration Test**: Test with MarkdownParser integration
 - **Sample Conversions**: Show before/after link transformations
 
 ### 12. `/lib/core/migrate-state.js` - State Migration Tool ✅
 - **Auto Detection**: Check if `.docuflu/sync-state.json` exists
-- **Safe Migration**: Copy state files từ `.docuflu/` → `.docusaurus/`
+- **Safe Migration**: Copy state files from `.docuflu/` → `.docusaurus/`
 - **Backup Creation**: Move old directory to `.docuflu.backup/`
-- **File Preservation**: Migrate cache, logs và other files
-- **Error Handling**: Graceful handling với detailed error messages
-- **Integration**: Seamless integration với StateManager.init()
+- **File Preservation**: Migrate cache, logs and other files
+- **Error Handling**: Graceful handling with detailed error messages
+- **Integration**: Seamless integration with StateManager.init()
 
 ### 13. `/lib/core/mermaid-processor.js` - Mermaid Diagram Processing ✅ NEW
-- **Diagram Detection**: Extract Mermaid code blocks từ markdown content
+- **Diagram Detection**: Extract Mermaid code blocks from markdown content
 - **Auto Installation**: Install @mermaid-js/mermaid-cli if not available
 - **Image Generation**: Convert Mermaid code to PNG images (800x600)
 - **Confluence Upload**: Upload generated images as page attachments
-- **Content Conversion**: Replace code blocks với Confluence image format
+- **Content Conversion**: Replace code blocks with Confluence image format
 - **Cleanup**: Remove temporary files after processing
 - **Error Handling**: Graceful fallback to code blocks if processing fails
 
 ### 14. `/lib/core/mermaid-processor.js` - Mermaid Diagram Processor ✅ NEW
-- **Diagram Detection**: Extract Mermaid code blocks từ markdown content
+- **Diagram Detection**: Extract Mermaid code blocks from markdown content
 - **Auto-install CLI**: Automatically install @mermaid-js/mermaid-cli if not available
 - **SVG Generation**: Convert Mermaid code to high-quality SVG images (800x600)
 - **Confluence Upload**: Upload generated SVG images as page attachments
-- **Content Replacement**: Replace code blocks với Confluence image format
+- **Content Replacement**: Replace code blocks with Confluence image format
 - **HTML Entity Handling**: Unescape HTML entities for proper ID matching
 - **Processing Flow**: Mermaid processing after HTML conversion for proper integration
 - **Error Handling**: Graceful fallback to code blocks if processing fails
@@ -266,11 +266,11 @@ node bin/docuflu.js sync --file docs/test-internal-links.md
 ## 🎯 Latest Achievements (Phase 2+)
 
 ### State Directory Migration ✅ NEW
-- **Directory Change**: `.docuflu/` → `.docusaurus/` (tương thích với Docusaurus)
-- **Auto Migration**: Tự động migrate khi chạy sync command lần đầu
-- **Backup Safety**: Tạo `.docuflu.backup/` để backup dữ liệu cũ
-- **Seamless Transition**: Không mất dữ liệu, hoạt động transparently
-- **Integration**: Tận dụng `.docusaurus/` folder có sẵn của Docusaurus
+- **Directory Change**: `.docuflu/` → `.docusaurus/` (compatible with Docusaurus)
+- **Auto Migration**: Automatically migrate when running sync command for the first time
+- **Backup Safety**: Create `.docuflu.backup/` to backup old data
+- **Seamless Transition**: No data loss, works transparently
+- **Integration**: Leverage existing `.docusaurus/` folder from Docusaurus
 
 ### Mermaid Diagram Processing ✅ NEW
 - **21 implemented features** (was 20, +1 new Mermaid support)
@@ -292,17 +292,17 @@ node bin/docuflu.js sync --file docs/test-internal-links.md
   - ✅ Anchor links: `./file.md#section`
 - **URL Format**: Modern Confluence format `/wiki/spaces/{SPACE}/pages/{ID}/{title}`
 - **Conversion Rate**: 95% success (category pages not supported yet)
-- **Integration**: Seamless với existing sync workflow
+- **Integration**: Seamless with existing sync workflow
 
 ### Test Coverage Expansion ✅
 - **2 new test files**: `test-internal-links.md`, `test-advanced-features.md`
 - **Advanced Docusaurus features**: Admonitions, code blocks, tabs, math, mermaid
-- **Comprehensive link testing**: 30+ links với various formats
+- **Comprehensive link testing**: 30+ links with various formats
 - **Mock state testing**: Realistic page ID resolution
 
 ### URL Format Fix ✅ CRITICAL
-- **Problem**: Legacy URLs `https://f8a.atlassian.net/pages/viewpage.action?pageId=45514944` → 404
-- **Solution**: Modern URLs `https://f8a.atlassian.net/wiki/spaces/CEX/pages/45514944/Tutorial+Intro` ✅
+- **Problem**: Legacy URLs `https://domain.atlassian.net/pages/viewpage.action?pageId=123456` → 404
+- **Solution**: Modern URLs `https://domain.atlassian.net/wiki/spaces/SPACE/pages/123456/Page+Title` ✅
 - **Impact**: All internal references now work correctly
 
 ## 🔑 Environment Variables Required
@@ -321,7 +321,7 @@ DOCUFLU_CONCURRENT_UPLOADS=5
 DOCUFLU_RETRY_COUNT=3
 ```
 
-## 🚀 CLI Usage hiện tại
+## 🚀 Current CLI Usage
 
 ```bash
 # Help
@@ -337,33 +337,33 @@ node bin/docuflu.js sync --docs                    # Sync all docs/
 node bin/docuflu.js sync --docs --dry-run          # Preview docs sync
 node bin/docuflu.js sync --blog                    # Sync all blog/ (placeholder)
 
-# Test với docusaurus example
+# Test with docusaurus example
 node bin/docuflu.js sync --file docusaurus-example/docs/intro.md
 cd docusaurus-example && node ../bin/docuflu.js sync --docs
 ```
 
-## ✅ Features đã hoàn thành
+## ✅ Features Completed
 
 ### Phase 1: Single File Sync
-1. **CLI Framework**: Commander.js setup với options
-2. **Markdown Parsing**: markdown-it + gray-matter cho frontmatter  
-3. **Confluence Integration**: REST API với axios
-4. **Authentication**: Basic Auth với API token
-5. **File Validation**: Check file exists và .md extension
+1. **CLI Framework**: Commander.js setup with options
+2. **Markdown Parsing**: markdown-it + gray-matter for frontmatter  
+3. **Confluence Integration**: REST API with axios
+4. **Authentication**: Basic Auth with API token
+5. **File Validation**: Check file exists and .md extension
 6. **Content Conversion**: Basic HTML → Confluence Storage Format
-7. **Page Management**: Create new hoặc update existing pages
-8. **Error Handling**: Detailed error messages và recovery
-9. **Dry Run Mode**: Preview changes không thực sự sync
-10. **Configuration**: .env file support với validation
+7. **Page Management**: Create new or update existing pages
+8. **Error Handling**: Detailed error messages and recovery
+9. **Dry Run Mode**: Preview changes without actually syncing
+10. **Configuration**: .env file support with validation
 11. **🖼️ Image Processing**: Upload local images + convert to Confluence format
 
-### Phase 2: Multi-file Sync với Hierarchy
-12. **🗂️ Docusaurus Scanner**: Auto-detect project structure và scan directories
-13. **📊 State Management**: `.docuflu/sync-state.json` cho incremental sync
-14. **🌳 Hierarchy Support**: Parent-child page relationships theo folder structure
-15. **🔄 Multi-file Sync**: `--docs` option sync toàn bộ docs/ directory
+### Phase 2: Multi-file Sync with Hierarchy
+12. **🗂️ Docusaurus Scanner**: Auto-detect project structure and scan directories
+13. **📊 State Management**: `.docuflu/sync-state.json` for incremental sync
+14. **🌳 Hierarchy Support**: Parent-child page relationships based on folder structure
+15. **🔄 Multi-file Sync**: `--docs` option syncs entire docs/ directory
 16. **📈 Statistics Tracking**: Detailed sync reports (created, updated, skipped, failed)
-17. **🧪 Comprehensive Testing**: Hierarchy tests với nested directory support
+17. **🧪 Comprehensive Testing**: Hierarchy tests with nested directory support
 
 ## 🧪 Hierarchy Testing Results
 
@@ -408,41 +408,42 @@ node bin/docuflu.js sync --docs  # Second run: 8 skipped (no changes)
 ### Enhanced Features
 1. **Blog Sync Implementation**: Complete `syncBlog()` function
 2. **Advanced Markdown Features**: Admonitions, tabs, mermaid diagrams
-3. **Global Installation**: npm publish và global CLI usage
-4. **Init Command**: `docuflu init` để setup project
-5. **Status Command**: `docuflu status` để xem sync status
+3. **Global Installation**: npm publish and global CLI usage
+4. **Init Command**: `docuflu init` to setup project
+5. **Status Command**: `docuflu status` to view sync status
 6. **Advanced Markdown**: Support Docusaurus-specific syntax
-7. **Performance Optimization**: Concurrent uploads và rate limiting
+7. **Performance Optimization**: Concurrent uploads and rate limiting
 8. **CI/CD Integration**: GitHub Actions workflow examples
 
 ## 📊 Current Status Summary
 
 **✅ Phase 1 Complete**: Single file sync với image processing  
 **✅ Phase 2 Complete**: Multi-file sync với hierarchy support  
-**🎯 Phase 3 Next**: Blog sync, advanced features, global installation
+**✅ Phase 3 Partial**: Init command, SVG Mermaid, state migration  
+**🎯 Phase 4 Next**: Blog sync, status command, global installation
 
-**Total Files Created**: 10 core files + 4 test files  
-**Total Features**: 21 implemented features  
-**Test Coverage**: Basic parser, hierarchy structure, nested hierarchy  
-**Production Ready**: ✅ Có thể sync Docusaurus projects lên Confluence với proper hierarchy
+**Total Files Created**: 11 core files + 6 test files  
+**Total Features**: 22 implemented features  
+**Test Coverage**: Basic parser, hierarchy, nested hierarchy, references, mermaid, migration, init  
+**Production Ready**: ✅ Can sync Docusaurus projects to Confluence with proper hierarchy and init setup
 
 ## 🧠 Lessons Learned
 
-1. **Package compatibility**: Check ESM/CommonJS trước khi dùng
-2. **Confluence API**: REST API documentation đôi khi không đầy đủ, phải test actual responses
-3. **Error handling**: Cần detailed error messages để debug
-4. **Version management**: Confluence pages cần version number cho updates
-5. **Search API**: Cần `expand` parameter để get đầy đủ data
+1. **Package compatibility**: Check ESM/CommonJS before using
+2. **Confluence API**: REST API documentation sometimes incomplete, need to test actual responses
+3. **Error handling**: Need detailed error messages for debugging
+4. **Version management**: Confluence pages need version number for updates
+5. **Search API**: Need `expand` parameter to get complete data
 
 ## 📊 Current Status
 
-**✅ HOÀN THÀNH**: CLI có thể parse 1 file markdown và sync lên Confluence thành công
-- Parse markdown với frontmatter ✅
-- Convert sang Confluence format ✅  
-- Connect đến Confluence ✅
+**✅ COMPLETED**: CLI can parse 1 markdown file and sync to Confluence successfully
+- Parse markdown with frontmatter ✅
+- Convert to Confluence format ✅  
+- Connect to Confluence ✅
 - Create/update pages ✅
 - Error handling ✅
 - Dry run mode ✅
 - **🖼️ Image processing**: Upload local images + convert format ✅
 
-**🚧 TRONG TƯƠNG LAI**: Multi-file sync, hierarchy, state management
+**🚧 FUTURE**: Multi-file sync, hierarchy, state management
