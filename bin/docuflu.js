@@ -6,10 +6,13 @@ const { syncFile, syncDocs, syncBlog } = require('../lib/commands/sync');
 
 const program = new Command();
 
+// Read version from package.json
+const packageJson = require('../package.json');
+
 program
   .name('docuflu')
-  .description('CLI tool to sync Docusaurus content to Confluence')
-  .version('0.1.0');
+  .description('CLI tool to sync Docusaurus documentation to Confluence with hierarchy, internal links, and Mermaid diagram support')
+  .version(packageJson.version);
 
 program
   .command('sync')
