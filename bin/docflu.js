@@ -11,7 +11,7 @@ const program = new Command();
 const packageJson = require('../package.json');
 
 program
-  .name('docuflu')
+  .name('docflu')
   .description('CLI tool to sync Docusaurus documentation to Confluence with hierarchy, internal links, and Mermaid diagram support')
   .version(packageJson.version);
 
@@ -36,9 +36,9 @@ program
       } else {
         console.log(chalk.red('❌ Please specify --file, --docs, or --blog option'));
         console.log('Examples:');
-        console.log('  docuflu sync --file docs/intro.md');
-        console.log('  docuflu sync --docs');
-        console.log('  docuflu sync --blog');
+        console.log('  docflu sync --file docs/intro.md');
+        console.log('  docflu sync --docs');
+        console.log('  docflu sync --blog');
         process.exit(1);
       }
     } catch (error) {
@@ -49,7 +49,7 @@ program
 
 program
   .command('init')
-  .description('Initialize DocuFlu in current directory')
+  .description('Initialize DocFlu in current directory')
   .action(async () => {
     try {
       await initProject();

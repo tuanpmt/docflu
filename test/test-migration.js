@@ -15,8 +15,8 @@ async function testStateMigration() {
     
     console.log(chalk.blue('1. Setting up test environment'));
     
-    // Create mock .docuflu/ directory with state
-    const oldStateDir = path.join(testDir, '.docuflu');
+    // Create mock .docflu/ directory with state
+    const oldStateDir = path.join(testDir, '.docflu');
     const oldStateFile = path.join(oldStateDir, 'sync-state.json');
     
     await fs.ensureDir(oldStateDir);
@@ -46,7 +46,7 @@ async function testStateMigration() {
     };
     
     await fs.writeJson(oldStateFile, mockState, { spaces: 2 });
-    console.log(chalk.green('✓ Created mock .docuflu/sync-state.json'));
+    console.log(chalk.green('✓ Created mock .docflu/sync-state.json'));
     
     // Create some additional files to test migration
     await fs.ensureDir(path.join(oldStateDir, 'cache'));
@@ -72,7 +72,7 @@ async function testStateMigration() {
     console.log(chalk.blue('\n4. Verifying migration results'));
     
     const newStateFile = path.join(testDir, '.docusaurus', 'sync-state.json');
-    const backupDir = path.join(testDir, '.docuflu.backup');
+    const backupDir = path.join(testDir, '.docflu.backup');
     
     // Check new state file exists
     if (!await fs.pathExists(newStateFile)) {

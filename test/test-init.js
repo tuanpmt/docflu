@@ -4,7 +4,7 @@ const path = require('path');
 const chalk = require('chalk');
 
 async function testInit() {
-  console.log(chalk.blue('🧪 Testing DocuFlu init command...\n'));
+  console.log(chalk.blue('🧪 Testing DocFlu init command...\n'));
 
   try {
     // Test 1: Init in empty directory

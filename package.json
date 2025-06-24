@@ -1,10 +1,10 @@
 {
-  "name": "docuflu",
+  "name": "docflu",
   "version": "1.0.2",
   "description": "CLI tool to sync Docusaurus documentation to Confluence with hierarchy, internal links, and Mermaid diagram support",
-  "main": "bin/docuflu.js",
+  "main": "bin/docflu.js",
   "bin": {
-    "docuflu": "./bin/docuflu.js"
+    "docflu": "./bin/docflu.js"
   },
   "scripts": {
     "test": "node test/test-basic.js",
@@ -60,10 +60,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/tuanpmt/docuflu.git"
+    "url": "https://github.com/tuanpmt/docflu.git"
   },
   "bugs": {
-    "url": "https://github.com/tuanpmt/docuflu/issues"
+    "url": "https://github.com/tuanpmt/docflu/issues"
   },
-  "homepage": "https://github.com/tuanpmt/docuflu#readme"
+  "homepage": "https://github.com/tuanpmt/docflu#readme"
 }

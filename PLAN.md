@@ -1,4 +1,4 @@
-# PLAN: DocuFlu CLI - Docusaurus to Confluence Sync
+# PLAN: docflu CLI - Docusaurus to Confluence Sync
 
 > **🎯 STATUS**: ✅ Phase 2 COMPLETED - Multi-file sync with hierarchy support  
 > **📅 Updated**: 2025-06-24  
@@ -7,8 +7,8 @@
 ## 1. Specific Requirements Analysis
 
 ### 1.1 Goals
-- **CLI Tool**: `docuflu` - command line interface
-- **Command**: `docuflu sync` - sync Docusaurus to Confluence  
+- **CLI Tool**: `docflu` - command line interface
+- **Command**: `docflu sync` - sync Docusaurus to Confluence  
 - **Direction**: 1-way sync (Markdown → Confluence), can extend to 2-way later
 - **Config**: `.env` file in project root for configuration
 - **State**: `.docusaurus/` folder to store sync information (compatible with Docusaurus)
@@ -23,19 +23,19 @@
 
 ### 2.1 CLI Structure
 ```
-docuflu/                        # Global CLI package
+docflu/                        # Global CLI package
 ├── bin/
-│   └── docuflu.js             # CLI entry point
+│   └── docflu.js             # CLI entry point
 ├── lib/
 │   ├── commands/
-│   │   ├── sync.js            # docuflu sync command
-│   │   ├── init.js            # docuflu init command  
-│   │   └── status.js          # docuflu status command
+│   │   ├── sync.js            # docflu sync command
+│   │   ├── init.js            # docflu init command  
+│   │   └── status.js          # docflu status command
 │   ├── core/
 │   │   ├── confluence-client.js    # Confluence API wrapper
 │   │   ├── markdown-parser.js      # Markdown to Confluence converter
 │   │   ├── docusaurus-scanner.js   # Scan Docusaurus structure
-│   │   ├── state-manager.js        # Manage .docuflu/ state
+│   │   ├── state-manager.js        # Manage .docflu/ state
 │   │   └── config.js              # Load .env configuration
 │   └── utils/
 │       ├── logger.js          # Colored logging
@@ -59,7 +59,7 @@ my-docusaurus-site/
 
 ### 2.3 Data Flow
 ```
-docuflu sync → Load .env → Scan Docusaurus → Parse Markdown → Confluence API → Update .docusaurus/
+docflu sync → Load .env → Scan Docusaurus → Parse Markdown → Confluence API → Update .docusaurus/
 ```
 
 ## 3. Technical Implementation
@@ -67,19 +67,19 @@ docuflu sync → Load .env → Scan Docusaurus → Parse Markdown → Confluence
 ### 3.1 CLI Package Setup
 ```bash
 # Global installation
-npm install -g docuflu
+npm install -g docflu
 
 # Or local project usage  
-npx docuflu sync
+npx docflu sync
 ```
 
 ### 3.2 Dependencies ✅ IMPLEMENTED
 ```json
 {
-  "name": "docuflu",
+  "name": "docflu",
   "version": "0.1.0",
   "bin": {
-    "docuflu": "./bin/docuflu.js"
+    "docflu": "./bin/docflu.js"
   },
   "dependencies": {
     "axios": "^1.6.0",           // ✅ Replaced confluence-api (not working)
@@ -99,13 +99,13 @@ npx docuflu sync
 ### 3.3 Core Features ✅ 22/22 IMPLEMENTED
 
 #### 3.3.1 CLI Commands
-- ✅ `docuflu init` - Setup .env and .docusaurus/ (IMPLEMENTED)
-- ✅ `docuflu sync` - Sync everything (IMPLEMENTED)
-- ✅ `docuflu sync --docs` - Only sync docs/ (IMPLEMENTED)
-- 🔄 `docuflu sync --blog` - Only sync blog/ (PLACEHOLDER)
-- ✅ `docuflu sync --file <path>` - Sync 1 specific markdown file (IMPLEMENTED)
-- ❌ `docuflu status` - View sync status (NOT IMPLEMENTED)
-- ✅ `docuflu --help` - Show help (IMPLEMENTED)
+- ✅ `docflu init` - Setup .env and .docusaurus/ (IMPLEMENTED)
+- ✅ `docflu sync` - Sync everything (IMPLEMENTED)
+- ✅ `docflu sync --docs` - Only sync docs/ (IMPLEMENTED)
+- 🔄 `docflu sync --blog` - Only sync blog/ (PLACEHOLDER)
+- ✅ `docflu sync --file <path>` - Sync 1 specific markdown file (IMPLEMENTED)
+- ❌ `docflu status` - View sync status (NOT IMPLEMENTED)
+- ✅ `docflu --help` - Show help (IMPLEMENTED)
 
 #### 3.3.2 Docusaurus Scanner ✅ IMPLEMENTED
 - ✅ Auto-detect Docusaurus project from docusaurus.config.ts
@@ -149,9 +149,9 @@ CONFLUENCE_SPACE_KEY=DOC
 CONFLUENCE_ROOT_PAGE_TITLE=Documentation
 
 # Optional Settings
-DOCUFLU_EXCLUDE_PATTERNS=*.draft.md,private/**
-DOCUFLU_CONCURRENT_UPLOADS=5
-DOCUFLU_RETRY_COUNT=3
+docflu_EXCLUDE_PATTERNS=*.draft.md,private/**
+docflu_CONCURRENT_UPLOADS=5
+docflu_RETRY_COUNT=3
 ```
 
 #### 3.4.2 .docusaurus/sync-state.json (Auto-generated)
@@ -178,7 +178,7 @@ DOCUFLU_RETRY_COUNT=3
 ## 4. Implementation Steps (AI-Assisted)
 
 ### Phase 1: CLI Foundation ✅ COMPLETED
-1. ✅ Setup CLI package structure với bin/docuflu.js
+1. ✅ Setup CLI package structure với bin/docflu.js
 2. ✅ Implement commander.js cho CLI commands
 3. ✅ Setup package.json với dependencies
 4. ✅ Create basic help và version commands
@@ -196,9 +196,9 @@ DOCUFLU_RETRY_COUNT=3
 4. ✅ Create page hierarchy mapping với nested directory support
 
 ### Phase 4: Commands Implementation ✅ MOSTLY COMPLETED
-1. ✅ Implement `docuflu init` command (IMPLEMENTED)
-2. ✅ Build `docuflu sync` với options (--docs, --blog, --file, --dry-run)
-3. ❌ Create `docuflu status` command (NOT IMPLEMENTED)
+1. ✅ Implement `docflu init` command (IMPLEMENTED)
+2. ✅ Build `docflu sync` với options (--docs, --blog, --file, --dry-run)
+3. ❌ Create `docflu status` command (NOT IMPLEMENTED)
 4. ✅ Add file validation cho single file sync
 5. ✅ Add colored logging với chalk và ora spinners
 
@@ -214,10 +214,10 @@ DOCUFLU_RETRY_COUNT=3
 ```bash
 # Currently local usage only (global install not implemented)
 cd docusaurus-project
-node path/to/docuflu/bin/docuflu.js --version
+node path/to/docflu/bin/docflu.js --version
 
 # Automated .env setup with init command
-node path/to/docuflu/bin/docuflu.js init
+node path/to/docflu/bin/docflu.js init
 # This creates .env file with template configuration
 # Edit .env with your Confluence credentials
 # State will be stored in .docusaurus/sync-state.json
@@ -225,7 +225,7 @@ node path/to/docuflu/bin/docuflu.js init
 
 ### 5.2 Configuration (.env)
 ```bash
-# .env file created after docuflu init
+# .env file created after docflu init
 CONFLUENCE_BASE_URL=https://mycompany.atlassian.net
 CONFLUENCE_USERNAME=john.doe@company.com
 CONFLUENCE_API_TOKEN=ATxxxxxxxxxxxxxx
@@ -233,37 +233,37 @@ CONFLUENCE_SPACE_KEY=DOC
 CONFLUENCE_ROOT_PAGE_TITLE=Documentation
 
 # Optional Settings
-DOCUFLU_EXCLUDE_PATTERNS=*.draft.md,private/**
-DOCUFLU_CONCURRENT_UPLOADS=5
-DOCUFLU_RETRY_COUNT=3
+docflu_EXCLUDE_PATTERNS=*.draft.md,private/**
+docflu_CONCURRENT_UPLOADS=5
+docflu_RETRY_COUNT=3
 ```
 
 ### 5.3 CLI Commands ✅ WORKING
 ```bash
 # Sync all docs (implemented)
-node bin/docuflu.js sync --docs
-node bin/docuflu.js sync --docs --dry-run
+node bin/docflu.js sync --docs
+node bin/docflu.js sync --docs --dry-run
 
 # Sync blog (placeholder only)
-node bin/docuflu.js sync --blog
+node bin/docflu.js sync --blog
 
 # Sync single file (implemented)
-node bin/docuflu.js sync --file docs/intro.md
-node bin/docuflu.js sync --file docs/intro.md --dry-run
+node bin/docflu.js sync --file docs/intro.md
+node bin/docflu.js sync --file docs/intro.md --dry-run
 
 # Check sync status (not implemented)
-# docuflu status
+# docflu status
 
 # Help (implemented)
-node bin/docuflu.js --help
-node bin/docuflu.js sync --help
+node bin/docflu.js --help
+node bin/docflu.js sync --help
 ```
 
 ### 5.4 Output Examples ✅ ACTUAL RESULTS
 
 #### 5.4.1 Multi-file Docs Sync
 ```bash
-$ node bin/docuflu.js sync --docs
+$ node bin/docflu.js sync --docs
 🚀 Syncing all docs/
 ✓ Detected Docusaurus project
 📁 Found 8 documents in docs/
@@ -288,7 +288,7 @@ Failed: 0
 
 #### 5.4.2 Incremental Sync
 ```bash
-$ node bin/docuflu.js sync --docs
+$ node bin/docflu.js sync --docs
 🚀 Syncing all docs/
 ✓ Detected Docusaurus project
 📁 Found 8 documents in docs/
@@ -382,11 +382,11 @@ Failed: 0
 ## 9. Future Enhancements (Phase 3)
 
 ### 9.1 Missing Features
-- ❌ `docuflu status` command - Sync state review  
+- ❌ `docflu status` command - Sync state review  
 - ❌ Blog sync implementation (currently placeholder)
 - ❌ Global npm installation
 - ✅ Mermaid diagrams (implemented with SVG support)
-- ✅ `docuflu init` command (implemented with .env setup)
+- ✅ `docflu init` command (implemented with .env setup)
 - ❌ Advanced Docusaurus syntax (admonitions, tabs)
 - ❌ Category page references (/docs/category/xxx)
 - ❌ Query parameters in links (?search=xxx, ?filter=xxx)

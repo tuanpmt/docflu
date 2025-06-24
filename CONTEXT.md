@@ -1,16 +1,16 @@
-# DocuFlu CLI Development Context
+# docflu CLI Development Context
 
 ## 📋 Project Summary
-- **Name**: DocuFlu CLI - Docusaurus to Confluence Sync
+- **Name**: docflu CLI - Docusaurus to Confluence Sync
 - **Goal**: CLI tool to sync markdown files from Docusaurus to Confluence
 - **Status**: ✅ Phase 2+ Complete - Multi-file sync with hierarchy support and internal reference processing
 
 ## 🗂️ Project Structure Created
 
 ```
-docuflu/
+docflu/
 ├── bin/
-│   └── docuflu.js                  # CLI entry point ✅
+│   └── docflu.js                  # CLI entry point ✅
 ├── lib/
 │   ├── commands/
 │   │   ├── sync.js                 # Sync command logic ✅
@@ -24,7 +24,7 @@ docuflu/
 │       ├── state-manager.js       # .docusaurus/ state management ✅
 │       ├── reference-processor.js  # Internal reference processing ✅
 │       ├── mermaid-processor.js    # Mermaid diagram processing ✅
-│       └── migrate-state.js       # .docuflu/ → .docusaurus/ migration ✅
+│       └── migrate-state.js       # .docflu/ → .docusaurus/ migration ✅
 ├── test/
 │   ├── test-basic.js              # Basic markdown parser test ✅
 │   ├── test-hierarchy.js          # Hierarchy structure test ✅
@@ -90,28 +90,28 @@ npm test
 
 ### 2. CLI Commands Test
 ```bash
-node bin/docuflu.js --help           # ✅ Show help
-node bin/docuflu.js sync --help      # ✅ Show sync options
-node bin/docuflu.js sync --file docusaurus-example/docs/intro.md --dry-run  # ✅ Dry run
+node bin/docflu.js --help           # ✅ Show help
+node bin/docflu.js sync --help      # ✅ Show sync options
+node bin/docflu.js sync --file docusaurus-example/docs/intro.md --dry-run  # ✅ Dry run
 ```
 
 ### 3. Live Confluence Sync Test  
 ```bash
 # Single file sync
-node bin/docuflu.js sync --file docusaurus-example/docs/intro.md
+node bin/docflu.js sync --file docusaurus-example/docs/intro.md
 # ✅ SUCCESS: Updated page ID 45514832
 # ✅ URL: https://f8a.atlassian.net/pages/viewpage.action?pageId=45514832
 
 # Multi-file docs sync (Phase 2)
-node bin/docuflu.js sync --docs
+node bin/docflu.js sync --docs
 # ✅ SUCCESS: 8 processed, 7 created, 1 updated, 0 skipped, 0 failed
 
 # Incremental sync test
-node bin/docuflu.js sync --docs  
+node bin/docflu.js sync --docs  
 # ✅ SUCCESS: 0 processed, 8 skipped (no changes detected)
 
 # Internal reference processing test (Phase 2+)
-node bin/docuflu.js sync --file docs/test-internal-links.md
+node bin/docflu.js sync --file docs/test-internal-links.md
 # ✅ SUCCESS: 20 internal links converted to Confluence URLs
 # ✅ URL Format: https://f8a.atlassian.net/wiki/spaces/CEX/pages/45514944/Tutorial+Intro
 ```
@@ -144,7 +144,7 @@ node bin/docuflu.js sync --file docs/test-internal-links.md
 
 ## 📁 Files Created and Content
 
-### 1. `/bin/docuflu.js` - CLI Entry Point
+### 1. `/bin/docflu.js` - CLI Entry Point
 - Commander.js setup with sync command
 - Options: `-f, --file <path>`, `--docs`, `--blog`, `--dry-run`
 - Error handling and colored output
@@ -228,9 +228,9 @@ node bin/docuflu.js sync --file docs/test-internal-links.md
 - **Sample Conversions**: Show before/after link transformations
 
 ### 12. `/lib/core/migrate-state.js` - State Migration Tool ✅
-- **Auto Detection**: Check if `.docuflu/sync-state.json` exists
-- **Safe Migration**: Copy state files from `.docuflu/` → `.docusaurus/`
-- **Backup Creation**: Move old directory to `.docuflu.backup/`
+- **Auto Detection**: Check if `.docflu/sync-state.json` exists
+- **Safe Migration**: Copy state files from `.docflu/` → `.docusaurus/`
+- **Backup Creation**: Move old directory to `.docflu.backup/`
 - **File Preservation**: Migrate cache, logs and other files
 - **Error Handling**: Graceful handling with detailed error messages
 - **Integration**: Seamless integration with StateManager.init()
@@ -266,9 +266,9 @@ node bin/docuflu.js sync --file docs/test-internal-links.md
 ## 🎯 Latest Achievements (Phase 2+)
 
 ### State Directory Migration ✅ NEW
-- **Directory Change**: `.docuflu/` → `.docusaurus/` (compatible with Docusaurus)
+- **Directory Change**: `.docflu/` → `.docusaurus/` (compatible with Docusaurus)
 - **Auto Migration**: Automatically migrate when running sync command for the first time
-- **Backup Safety**: Create `.docuflu.backup/` to backup old data
+- **Backup Safety**: Create `.docflu.backup/` to backup old data
 - **Seamless Transition**: No data loss, works transparently
 - **Integration**: Leverage existing `.docusaurus/` folder from Docusaurus
 
@@ -316,30 +316,30 @@ CONFLUENCE_SPACE_KEY=DOC
 
 # Optional
 CONFLUENCE_ROOT_PAGE_TITLE=Documentation
-DOCUFLU_EXCLUDE_PATTERNS=*.draft.md,private/**
-DOCUFLU_CONCURRENT_UPLOADS=5
-DOCUFLU_RETRY_COUNT=3
+docflu_EXCLUDE_PATTERNS=*.draft.md,private/**
+docflu_CONCURRENT_UPLOADS=5
+docflu_RETRY_COUNT=3
 ```
 
 ## 🚀 Current CLI Usage
 
 ```bash
 # Help
-node bin/docuflu.js --help
-node bin/docuflu.js sync --help
+node bin/docflu.js --help
+node bin/docflu.js sync --help
 
 # Single file sync
-node bin/docuflu.js sync --file path/to/file.md
-node bin/docuflu.js sync --file path/to/file.md --dry-run
+node bin/docflu.js sync --file path/to/file.md
+node bin/docflu.js sync --file path/to/file.md --dry-run
 
 # Multi-file sync (Phase 2)
-node bin/docuflu.js sync --docs                    # Sync all docs/
-node bin/docuflu.js sync --docs --dry-run          # Preview docs sync
-node bin/docuflu.js sync --blog                    # Sync all blog/ (placeholder)
+node bin/docflu.js sync --docs                    # Sync all docs/
+node bin/docflu.js sync --docs --dry-run          # Preview docs sync
+node bin/docflu.js sync --blog                    # Sync all blog/ (placeholder)
 
 # Test with docusaurus example
-node bin/docuflu.js sync --file docusaurus-example/docs/intro.md
-cd docusaurus-example && node ../bin/docuflu.js sync --docs
+node bin/docflu.js sync --file docusaurus-example/docs/intro.md
+cd docusaurus-example && node ../bin/docflu.js sync --docs
 ```
 
 ## ✅ Features Completed
@@ -359,7 +359,7 @@ cd docusaurus-example && node ../bin/docuflu.js sync --docs
 
 ### Phase 2: Multi-file Sync with Hierarchy
 12. **🗂️ Docusaurus Scanner**: Auto-detect project structure and scan directories
-13. **📊 State Management**: `.docuflu/sync-state.json` for incremental sync
+13. **📊 State Management**: `.docflu/sync-state.json` for incremental sync
 14. **🌳 Hierarchy Support**: Parent-child page relationships based on folder structure
 15. **🔄 Multi-file Sync**: `--docs` option syncs entire docs/ directory
 16. **📈 Statistics Tracking**: Detailed sync reports (created, updated, skipped, failed)
@@ -399,8 +399,8 @@ node test/test-nested-hierarchy.js
 # ✅ Deep nested structure (Advanced/Concepts/Advanced Concepts) verified
 
 # Test incremental sync
-node bin/docuflu.js sync --docs  # First run: 8 processed
-node bin/docuflu.js sync --docs  # Second run: 8 skipped (no changes)
+node bin/docflu.js sync --docs  # First run: 8 processed
+node bin/docflu.js sync --docs  # Second run: 8 skipped (no changes)
 ```
 
 ## 🎯 Next Steps (Phase 3)
@@ -409,8 +409,8 @@ node bin/docuflu.js sync --docs  # Second run: 8 skipped (no changes)
 1. **Blog Sync Implementation**: Complete `syncBlog()` function
 2. **Advanced Markdown Features**: Admonitions, tabs, mermaid diagrams
 3. **Global Installation**: npm publish and global CLI usage
-4. **Init Command**: `docuflu init` to setup project
-5. **Status Command**: `docuflu status` to view sync status
+4. **Init Command**: `docflu init` to setup project
+5. **Status Command**: `docflu status` to view sync status
 6. **Advanced Markdown**: Support Docusaurus-specific syntax
 7. **Performance Optimization**: Concurrent uploads and rate limiting
 8. **CI/CD Integration**: GitHub Actions workflow examples

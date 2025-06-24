@@ -1,11 +1,11 @@
-# DocuFlu CLI
+# docflu CLI
 
 > **Sync Docusaurus documentation to Confluence seamlessly**
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D16.0.0-brightgreen.svg)](https://nodejs.org/)
 
-DocuFlu CLI automatically syncs your Docusaurus markdown documentation to Confluence pages, maintaining hierarchy, processing internal links, and handling images seamlessly.
+docflu CLI automatically syncs your Docusaurus markdown documentation to Confluence pages, maintaining hierarchy, processing internal links, and handling images seamlessly.
 
 > **🤖 AI-Powered Development**: Built in 3 hours using [Cursor](https://cursor.sh/) + [Claude 4 Sonnet](https://www.anthropic.com/claude)
 
@@ -26,11 +26,11 @@ DocuFlu CLI automatically syncs your Docusaurus markdown documentation to Conflu
 
 ```bash
 # Install from source
-git clone https://github.com/tuanpmt/docuflu.git
-cd docuflu && npm install && npm link
+git clone https://github.com/tuanpmt/docflu.git
+cd docflu && npm install && npm link
 
 # Verify installation
-docuflu --version
+docflu --version
 ```
 
 ### Setup
@@ -40,7 +40,7 @@ docuflu --version
 cd your-docusaurus-project
 
 # Initialize configuration
-docuflu init
+docflu init
 
 # Edit .env with your Confluence credentials
 ```
@@ -49,10 +49,10 @@ docuflu init
 
 ```bash
 # Preview changes
-docuflu sync --docs --dry-run
+docflu sync --docs --dry-run
 
 # Sync all documentation
-docuflu sync --docs
+docflu sync --docs
 ```
 
 ## 📖 Usage
@@ -61,10 +61,10 @@ docuflu sync --docs
 
 | Command | Description |
 |---------|-------------|
-| `docuflu init` | Setup .env configuration |
-| `docuflu sync --docs` | Sync all documentation |
-| `docuflu sync --file <path>` | Sync specific file |
-| `docuflu sync --dry-run` | Preview without changes |
+| `docflu init` | Setup .env configuration |
+| `docflu sync --docs` | Sync all documentation |
+| `docflu sync --file <path>` | Sync specific file |
+| `docflu sync --dry-run` | Preview without changes |
 
 ### Configuration (.env)
 
@@ -126,8 +126,8 @@ node test/test-internal-references.js
 
 ### Project Structure
 ```
-docuflu/
-├── bin/docuflu.js              # CLI entry point
+docflu/
+├── bin/docflu.js              # CLI entry point
 ├── lib/
 │   ├── commands/sync.js        # Sync logic
 │   └── core/                   # Core modules
@@ -164,7 +164,7 @@ Solution: Install from source (npm package not published yet)
 
 **Debug Mode**
 ```bash
-DEBUG=1 docuflu sync --docs
+DEBUG=1 docflu sync --docs
 ```
 
 ## 📈 Status
