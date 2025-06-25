@@ -13,7 +13,10 @@
     "test:references": "node test/test-internal-references.js",
     "test:migration": "node test/test-migration.js",
     "test:init": "node test/test-init.js",
-    "test:all": "npm run test && npm run test:hierarchy && npm run test:mermaid && npm run test:references && npm run test:migration && npm run test:init"
+    "test:diagram": "node test/test-diagram-processor.js",
+    "test:diagram-integration": "node test/test-diagram-integration.js",
+    "test:diagram-comprehensive": "node test/test-diagram-comprehensive.js",
+    "test:all": "npm run test && npm run test:hierarchy && npm run test:mermaid && npm run test:references && npm run test:migration && npm run test:init && npm run test:diagram-comprehensive"
   },
   "dependencies": {
     "axios": "^1.6.0",

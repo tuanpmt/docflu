@@ -6,7 +6,7 @@ async function testBasic() {
   
   try {
     const parser = new MarkdownParser();
-    const testFile = path.join(__dirname, '..', 'docusaurus-example', 'docs', 'intro.md');
+    const testFile = path.join(__dirname, 'sample-docs', 'intro.md');
     
     console.log('📄 Parsing file:', testFile);
     
@@ -20,6 +20,11 @@ async function testBasic() {
     // Show first 200 chars of content
     console.log('📖 Content preview:');
     console.log(result.content.substring(0, 200) + '...');
+    
+    // Test diagram detection if available
+    if (result.diagramStats) {
+      console.log('🎨 Diagram stats:', result.diagramStats);
+    }
     
   } catch (error) {
     console.error('❌ Test failed:', error.message);
