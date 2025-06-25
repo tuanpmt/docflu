@@ -60,9 +60,11 @@ This is a warning message!
 
 ## Links and References
 
-Here's a external link and some text.
+Here's a [external link](https://example.com) and some text.
 
 
 ## Image Example
+
+![sample-image.png](./img/sample-image.png)
 
 This document contains various formatting elements to test the conversion.

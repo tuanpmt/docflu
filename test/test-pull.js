@@ -10,6 +10,31 @@ const mockConfluenceClient = {
   downloadAttachment: async (pageId, filename) => {
     console.log(`Mock: Downloading attachment ${filename} from page ${pageId}`);
     return Buffer.from('Mock attachment content');
+  },
+  
+  getPageAttachments: async (pageId) => {
+    console.log(`Mock: Getting attachments for page ${pageId}`);
+    return [
+      {
+        id: 'att123',
+        title: 'sample-image.png',
+        _links: {
+          download: '/mock/download/sample-image.png'
+        },
+        metadata: {
+          mediaType: 'image/png'
+        }
+      }
+    ];
+  },
+  
+  downloadAttachmentById: async (attachment) => {
+    console.log(`Mock: Downloading attachment by ID: ${attachment.title}`);
+    return {
+      data: Buffer.from(`Mock content for ${attachment.title}`),
+      filename: attachment.title,
+      mediaType: attachment.metadata?.mediaType || 'application/octet-stream'
+    };
   }
 };
 

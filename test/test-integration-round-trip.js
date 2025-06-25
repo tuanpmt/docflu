@@ -28,7 +28,13 @@ async function testComprehensiveRoundTrip() {
   
   // Mock confluence client
   const mockClient = {
-    downloadAttachment: async () => Buffer.from('test')
+    downloadAttachment: async () => Buffer.from('test'),
+    getPageAttachments: async () => [],
+    downloadAttachmentById: async (attachment) => ({
+      data: Buffer.from('test'),
+      filename: attachment.title,
+      mediaType: 'application/octet-stream'
+    })
   };
   
   const converter = new ConfluenceToMarkdown(mockClient, process.cwd());
