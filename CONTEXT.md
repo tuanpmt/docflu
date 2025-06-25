@@ -272,14 +272,17 @@ node bin/docflu.js sync --file docs/test-internal-links.md
 - **Seamless Transition**: No data loss, works transparently
 - **Integration**: Leverage existing `.docusaurus/` folder from Docusaurus
 
-### Mermaid Diagram Processing ✅ NEW
-- **21 implemented features** (was 20, +1 new Mermaid support)
-- **Auto-install**: Automatically install @mermaid-js/mermaid-cli when needed
-- **Diagram Support**: Flowcharts, sequence, class, state, ER, journey, gantt
-- **SVG Generation**: Convert Mermaid code to high-quality SVG images (800x600)
-- **Vector Quality**: Scalable graphics with crisp edges at any zoom level
-- **File Size Optimization**: SVG format provides smaller file sizes than PNG
-- **Confluence Integration**: Upload SVG images as attachments với proper formatting
+### Comprehensive Diagram Processing ✅ COMPLETED
+- **23 implemented features** (was 21, +2 new diagram enhancements)
+- **Multi-format Support**: Mermaid, PlantUML, Graphviz/DOT, D2 diagrams
+- **Auto-installation**: Automatically install CLI tools (mmdc, plantuml, graphviz, d2)
+- **High-quality Output**: SVG generation at 1600x1200 resolution
+- **Professional Formatting**: Center-aligned images with enhanced styling
+- **Bidirectional Sync**: Original code preserved in base64-encoded metadata
+- **Smart Detection**: Auto-detect diagram types using regex patterns
+- **Confluence Integration**: Upload SVG images as attachments with proper format
+- **Error Handling**: Graceful fallback to code blocks with info messages
+- **Workflow Fix**: Process diagrams before final page update (critical fix)
 - **Processing Stats**: Track processed/failed diagram counts
 - **Cleanup**: Automatic temp file cleanup after processing
 
@@ -340,6 +343,10 @@ node bin/docflu.js sync --blog                    # Sync all blog/ (placeholder)
 # Test with docusaurus example
 node bin/docflu.js sync --file docusaurus-example/docs/intro.md
 cd docusaurus-example && node ../bin/docflu.js sync --docs
+
+# Test diagram processing
+node test/test-diagram-comprehensive.js           # Test all 4 diagram types
+node test/test-diagram-real.js                   # Test real conversion
 ```
 
 ## ✅ Features Completed
@@ -364,6 +371,14 @@ cd docusaurus-example && node ../bin/docflu.js sync --docs
 15. **🔄 Multi-file Sync**: `--docs` option syncs entire docs/ directory
 16. **📈 Statistics Tracking**: Detailed sync reports (created, updated, skipped, failed)
 17. **🧪 Comprehensive Testing**: Hierarchy tests with nested directory support
+
+### Phase 3: Advanced Features
+18. **🔧 Init Command**: `docflu init` for easy project setup
+19. **🔄 State Migration**: Auto-migrate `.docflu/` → `.docusaurus/`
+20. **🔗 Internal References**: Convert Docusaurus links to Confluence URLs
+21. **📊 Enhanced Statistics**: Detailed link conversion stats
+22. **🎨 Mermaid Diagrams**: Convert to high-quality SVG images
+23. **📐 Universal Diagrams**: Support Mermaid, PlantUML, Graphviz, D2
 
 ## 🧪 Hierarchy Testing Results
 
@@ -403,29 +418,28 @@ node bin/docflu.js sync --docs  # First run: 8 processed
 node bin/docflu.js sync --docs  # Second run: 8 skipped (no changes)
 ```
 
-## 🎯 Next Steps (Phase 3)
+## 🎯 Next Steps (Phase 4)
 
 ### Enhanced Features
 1. **Blog Sync Implementation**: Complete `syncBlog()` function
-2. **Advanced Markdown Features**: Admonitions, tabs, mermaid diagrams
-3. **Global Installation**: npm publish and global CLI usage
-4. **Init Command**: `docflu init` to setup project
-5. **Status Command**: `docflu status` to view sync status
-6. **Advanced Markdown**: Support Docusaurus-specific syntax
-7. **Performance Optimization**: Concurrent uploads and rate limiting
-8. **CI/CD Integration**: GitHub Actions workflow examples
+2. **Global Installation**: npm publish and global CLI usage
+3. **Status Command**: `docflu status` to view sync status
+4. **Advanced Markdown**: Support more Docusaurus-specific syntax
+5. **Performance Optimization**: Concurrent uploads and rate limiting
+6. **CI/CD Integration**: GitHub Actions workflow examples
+7. **Bidirectional Sync**: Confluence → Docusaurus sync capability
 
 ## 📊 Current Status Summary
 
 **✅ Phase 1 Complete**: Single file sync với image processing  
 **✅ Phase 2 Complete**: Multi-file sync với hierarchy support  
-**✅ Phase 3 Partial**: Init command, SVG Mermaid, state migration  
+**✅ Phase 3 Complete**: Init command, comprehensive diagram processing, state migration, internal references  
 **🎯 Phase 4 Next**: Blog sync, status command, global installation
 
-**Total Files Created**: 11 core files + 6 test files  
-**Total Features**: 22 implemented features  
-**Test Coverage**: Basic parser, hierarchy, nested hierarchy, references, mermaid, migration, init  
-**Production Ready**: ✅ Can sync Docusaurus projects to Confluence with proper hierarchy and init setup
+**Total Files Created**: 11 core files + 8 test files  
+**Total Features**: 23 implemented features  
+**Test Coverage**: Basic parser, hierarchy, nested hierarchy, references, comprehensive diagrams, migration, init  
+**Production Ready**: ✅ Can sync Docusaurus projects to Confluence with proper hierarchy, diagrams, and references
 
 ## 🧠 Lessons Learned
 
@@ -434,16 +448,22 @@ node bin/docflu.js sync --docs  # Second run: 8 skipped (no changes)
 3. **Error handling**: Need detailed error messages for debugging
 4. **Version management**: Confluence pages need version number for updates
 5. **Search API**: Need `expand` parameter to get complete data
+6. **Diagram Processing**: Workflow order matters - process diagrams before final page update
+7. **SVG Quality**: Higher resolution (1600x1200) provides better diagram quality
+8. **CLI Tools**: Auto-installation improves user experience significantly
 
 ## 📊 Current Status
 
-**✅ COMPLETED**: CLI can parse 1 markdown file and sync to Confluence successfully
+**✅ COMPLETED**: CLI can sync Docusaurus projects to Confluence with full feature support
 - Parse markdown with frontmatter ✅
 - Convert to Confluence format ✅  
 - Connect to Confluence ✅
-- Create/update pages ✅
-- Error handling ✅
-- Dry run mode ✅
-- **🖼️ Image processing**: Upload local images + convert format ✅
+- Create/update pages with hierarchy ✅
+- Error handling & dry run ✅
+- **🖼️ Image processing**: Upload local images ✅
+- **🎨 Diagram processing**: 4 types (Mermaid, PlantUML, Graphviz, D2) ✅
+- **🔗 Internal references**: Convert to Confluence URLs ✅
+- **📊 State management**: Incremental sync ✅
+- **🔧 Init command**: Easy setup ✅
 
-**🚧 FUTURE**: Multi-file sync, hierarchy, state management
+**🚧 FUTURE**: Blog sync, global installation, status command
