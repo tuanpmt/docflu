@@ -4,6 +4,7 @@ const { Command } = require('commander');
 const chalk = require('chalk');
 const { syncFile, syncDocs, syncBlog } = require('../lib/commands/sync');
 const { initProject } = require('../lib/commands/init');
+const { pullFromConfluence } = require('../lib/commands/pull');
 
 const program = new Command();
 
@@ -53,6 +54,36 @@ program
   .action(async () => {
     try {
       await initProject();
+    } catch (error) {
+      console.error(chalk.red('❌ Error:', error.message));
+      process.exit(1);
+    }
+  });
+
+program
+  .command('pull')
+  .description('Pull content from Confluence to Docusaurus')
+  .option('--root <title>', 'root page title in Confluence')
+  .option('--docs', 'pull to docs/ directory')
+  .option('--blog', 'pull to blog/ directory')
+  .option('--dry-run', 'preview changes without pulling')
+  .option('--force', 'force pull all files, ignore change detection')
+  .action(async (options) => {
+    try {
+      let target = 'docs'; // default
+      
+      if (options.blog) {
+        target = 'blog';
+      }
+      
+      console.log(chalk.blue(`🔄 Pulling from Confluence to ${target}/`));
+      
+      await pullFromConfluence({
+        root: options.root,
+        target: target,
+        dryRun: options.dryRun,
+        force: options.force
+      });
     } catch (error) {
       console.error(chalk.red('❌ Error:', error.message));
       process.exit(1);
