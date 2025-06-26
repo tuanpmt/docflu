@@ -137,7 +137,7 @@ digraph architecture {
 ```d2
 # Docusaurus Architecture
 docs: {
-  shape: folder
+  shape: rectangle
   label: "Documentation Files"
 }
 
@@ -147,12 +147,12 @@ docusaurus: {
 }
 
 build: {
-  shape: process
+  shape: diamond
   label: "Build Process"
 }
 
 output: {
-  shape: stored_data
+  shape: cylinder
   label: "Static Site"
 }
 
