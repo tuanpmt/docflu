@@ -148,6 +148,15 @@ node bin/docflu.js sync --file docs/test-internal-links.md
 - **Fix**: Added proper file stats retrieval in upload method with KB formatting
 - **Fix**: File size optimization reducing SVG files by 30% with smart compression
 
+### 7. Project Path Support Enhancement ✅ **NEW**
+- **Enhancement**: Added support for specifying project path via CLI argument for both sync and init commands
+- **Usage**: `node bin/docflu.js sync [projectPath] --docs` and `node bin/docflu.js init [projectPath]`
+- **Backward Compatible**: Still works without projectPath (defaults to current directory)
+- **Implementation**: Updated CLI parser to accept optional projectPath argument
+- **Functions Updated**: All sync functions and initProject function now accept optional `projectRoot` parameter
+- **Config Loading**: Config.loadConfig() now uses specified project root directory
+- **File Operations**: All file operations (creating .env, detecting Docusaurus config) now use specified project root
+
 ## 📁 Files Created and Content
 
 ### 1. `/bin/docflu.js` - CLI Entry Point
@@ -341,6 +350,7 @@ docflu_RETRY_COUNT=3
 # Help
 node bin/docflu.js --help
 node bin/docflu.js sync --help
+node bin/docflu.js init --help
 
 # Single file sync
 node bin/docflu.js sync --file path/to/file.md
@@ -350,6 +360,16 @@ node bin/docflu.js sync --file path/to/file.md --dry-run
 node bin/docflu.js sync --docs                    # Sync all docs/
 node bin/docflu.js sync --docs --dry-run          # Preview docs sync
 node bin/docflu.js sync --blog                    # Sync all blog/ (placeholder)
+
+# **NEW: Project Path Support** ✅
+node bin/docflu.js sync ../docusaurus-exam --docs    # Sync docs/ from another project
+node bin/docflu.js sync /path/to/project --blog      # Sync blog/ from absolute path
+node bin/docflu.js sync ~/projects/my-docs --file docs/intro.md  # File sync from another project
+
+# **NEW: Init with Project Path** ✅
+node bin/docflu.js init                           # Initialize current directory
+node bin/docflu.js init ../my-project             # Initialize another project
+node bin/docflu.js init /path/to/project          # Initialize absolute path
 
 # Test with docusaurus example
 node bin/docflu.js sync --file docusaurus-example/docs/intro.md
@@ -448,9 +468,9 @@ node bin/docflu.js sync --docs  # Second run: 8 skipped (no changes)
 **🎯 Phase 4 Next**: Blog sync, status command, global installation
 
 **Total Files Created**: 11 core files + 8 test files  
-**Total Features**: 25 implemented features (+2 new fixes)  
+**Total Features**: 26 implemented features (+1 project path support enhancement)  
 **Test Coverage**: Basic parser, hierarchy, nested hierarchy, references, comprehensive diagrams, migration, init  
-**Production Ready**: ✅ Can sync Docusaurus projects to Confluence with proper hierarchy, high-quality diagrams, and references
+**Production Ready**: ✅ Can sync Docusaurus projects to Confluence with proper hierarchy, high-quality diagrams, references, and flexible project path support
 
 ### 🔧 **Latest Quality Improvements**:
 - **Diagram Quality**: 100% Confluence compatibility score for Mermaid diagrams
@@ -483,4 +503,108 @@ node bin/docflu.js sync --docs  # Second run: 8 skipped (no changes)
 - **📊 State management**: Incremental sync ✅
 - **🔧 Init command**: Easy setup ✅
 
-**🚧 FUTURE**: Blog sync, global installation, status command
+## 🎯 Phase 2+ Google Docs Integration ✅ COMPLETED
+
+### Google Docs Sync Implementation
+
+**📁 New Structure Created**:
+```
+lib/core/gdocs/
+├── google-docs-converter.js    # ✅ Markdown → Google Docs conversion
+├── google-docs-state.js        # ✅ State management for Google Docs
+└── google-docs-sync.js          # ✅ Main sync orchestrator
+
+test/gdocs/
+├── test-converter.js           # ✅ Converter testing
+├── test-sync.js                # ✅ Sync engine testing
+└── test-all-gdocs.js           # ✅ Comprehensive test suite
+```
+
+**🚀 Features Implemented**:
+1. ✅ **Markdown Conversion**: Complete conversion to Google Docs format
+   - Headings with proper font sizes
+   - Paragraphs with inline formatting (bold, italic, code)
+   - Code blocks with syntax highlighting
+   - Lists (ordered and unordered)
+   - Empty content handling
+
+2. ✅ **State Management**: Incremental sync support
+   - File modification tracking
+   - Document ID persistence
+   - Sync statistics (created, updated, skipped, failed)
+   - State cleanup and validation
+
+3. ✅ **Sync Engine**: Complete orchestration
+   - Docusaurus project scanning (reuse existing)
+   - Content processing with processors (diagrams, images, references)
+   - Dry run mode support
+   - Error handling and cleanup
+
+4. ✅ **CLI Integration**: Seamless platform switching
+   - `--gdocs` flag for Google Docs sync
+   - `--conflu` flag for Confluence sync (default)
+   - File and docs sync support
+   - Project path specification
+
+5. ✅ **Content Processing**: Advanced features
+   - Internal reference processing (reuse existing)
+   - Diagram detection and processing (reuse existing)
+   - Image detection and processing (reuse existing)
+
+**🧪 Testing Results**:
+- ✅ All converter tests passed (7/7)
+- ✅ All sync engine tests passed (8/8)
+- ✅ CLI integration working
+- ✅ Real Google Docs document created successfully
+
+**📊 Live Test Results**:
+```bash
+✅ Document created: 1pmC8kYUUj3G0Q5ABbpNsaggCU2fTSS4cTZAxBWqfrYI
+✅ URL: https://docs.google.com/document/d/1pmC8kYUUj3G0Q5ABbpNsaggCU2fTSS4cTZAxBWqfrYI
+✅ Content synced: Tutorial Intro
+✅ Diagram processing attempted (Mermaid, D2 installed)
+```
+
+6. ✅ **Auto-Recovery System**: Robust document validation and recovery
+   - Automatic detection of deleted/invalid documents
+   - State cleanup and regeneration
+   - Graceful fallback to root document
+   - Startup validation of all documents in state
+
+**🧪 Auto-Recovery Testing Results**:
+```bash
+✅ Document validation on startup
+✅ Invalid document detection: "Requested entity was not found"
+✅ Automatic state cleanup: "🗑️ Cleared invalid document from state"
+✅ New document creation: "🔄 Auto-recovery: Creating new root document"
+✅ Seamless recovery without user intervention
+```
+
+**⚠️ Known Limitations**:
+- Image/diagram upload needs Google Drive API integration
+- Tab hierarchy planned for Phase 3
+- Blog sync placeholder implementation
+
+**🚧 FUTURE**: Tab hierarchy, image upload, blog sync, global installation, status command
+
+## 🛡️ Auto-Recovery Features ✅ NEW
+
+### Document Recovery System
+24. **🔍 Document Validation**: Startup validation of all documents in state
+25. **🔄 Auto-Recovery**: Automatic detection and cleanup of deleted documents
+26. **🗑️ State Cleanup**: Remove invalid document references from state
+27. **📄 Fallback Strategy**: Use root document when individual documents are deleted
+28. **🧹 Batch Cleanup**: Clean up multiple invalid documents in one operation
+
+### Recovery Scenarios Handled
+- **Root Document Deleted**: Creates new root document automatically
+- **Individual Documents Deleted**: Falls back to root document, cleans state
+- **Invalid Document IDs**: Detects and removes from state
+- **Network/Permission Issues**: Graceful error handling with recovery options
+- **Corrupted State**: Validates and repairs state on startup
+
+### User Experience Benefits
+- **Zero Manual Intervention**: Users don't need to manually fix broken sync
+- **Transparent Recovery**: Clear logging of what's being recovered
+- **Data Preservation**: Content is never lost, always re-synced to valid documents
+- **Robust Sync**: Continues working even after documents are deleted externally
