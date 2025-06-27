@@ -148,6 +148,15 @@ node bin/docflu.js sync --file docs/test-internal-links.md
 - **Fix**: Added proper file stats retrieval in upload method with KB formatting
 - **Fix**: File size optimization reducing SVG files by 30% with smart compression
 
+### 7. Project Path Support Enhancement ✅ **NEW**
+- **Enhancement**: Added support for specifying project path via CLI argument for both sync and init commands
+- **Usage**: `node bin/docflu.js sync [projectPath] --docs` and `node bin/docflu.js init [projectPath]`
+- **Backward Compatible**: Still works without projectPath (defaults to current directory)
+- **Implementation**: Updated CLI parser to accept optional projectPath argument
+- **Functions Updated**: All sync functions and initProject function now accept optional `projectRoot` parameter
+- **Config Loading**: Config.loadConfig() now uses specified project root directory
+- **File Operations**: All file operations (creating .env, detecting Docusaurus config) now use specified project root
+
 ## 📁 Files Created and Content
 
 ### 1. `/bin/docflu.js` - CLI Entry Point
@@ -341,6 +350,7 @@ docflu_RETRY_COUNT=3
 # Help
 node bin/docflu.js --help
 node bin/docflu.js sync --help
+node bin/docflu.js init --help
 
 # Single file sync
 node bin/docflu.js sync --file path/to/file.md
@@ -350,6 +360,16 @@ node bin/docflu.js sync --file path/to/file.md --dry-run
 node bin/docflu.js sync --docs                    # Sync all docs/
 node bin/docflu.js sync --docs --dry-run          # Preview docs sync
 node bin/docflu.js sync --blog                    # Sync all blog/ (placeholder)
+
+# **NEW: Project Path Support** ✅
+node bin/docflu.js sync ../docusaurus-exam --docs    # Sync docs/ from another project
+node bin/docflu.js sync /path/to/project --blog      # Sync blog/ from absolute path
+node bin/docflu.js sync ~/projects/my-docs --file docs/intro.md  # File sync from another project
+
+# **NEW: Init with Project Path** ✅
+node bin/docflu.js init                           # Initialize current directory
+node bin/docflu.js init ../my-project             # Initialize another project
+node bin/docflu.js init /path/to/project          # Initialize absolute path
 
 # Test with docusaurus example
 node bin/docflu.js sync --file docusaurus-example/docs/intro.md
@@ -448,9 +468,9 @@ node bin/docflu.js sync --docs  # Second run: 8 skipped (no changes)
 **🎯 Phase 4 Next**: Blog sync, status command, global installation
 
 **Total Files Created**: 11 core files + 8 test files  
-**Total Features**: 25 implemented features (+2 new fixes)  
+**Total Features**: 26 implemented features (+1 project path support enhancement)  
 **Test Coverage**: Basic parser, hierarchy, nested hierarchy, references, comprehensive diagrams, migration, init  
-**Production Ready**: ✅ Can sync Docusaurus projects to Confluence with proper hierarchy, high-quality diagrams, and references
+**Production Ready**: ✅ Can sync Docusaurus projects to Confluence with proper hierarchy, high-quality diagrams, references, and flexible project path support
 
 ### 🔧 **Latest Quality Improvements**:
 - **Diagram Quality**: 100% Confluence compatibility score for Mermaid diagrams
