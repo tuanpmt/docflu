@@ -4,7 +4,7 @@ const { Command } = require('commander');
 const chalk = require('chalk');
 const path = require('path');
 const { syncFile, syncDocs, syncBlog } = require('../lib/commands/sync');
-const { syncGoogleDocs } = require('../lib/commands/gsync');
+const { syncGoogleDocs } = require('../lib/commands/sync_gdocs');
 const { initProject } = require('../lib/commands/init');
 
 const program = new Command();
