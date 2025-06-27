@@ -28,8 +28,43 @@ program
   .option('--dry-run', 'preview changes without syncing')
   .action(async (projectPath, options) => {
     try {
-      // Determine project root - use provided path or current directory
-      const projectRoot = projectPath ? path.resolve(projectPath) : process.cwd();
+      let projectRoot;
+      let filePath = options.file;
+
+      // Handle different scenarios for project root and file path
+      if (options.file) {
+        if (projectPath) {
+          // Case: docflu sync /project/path --file relative/file.md
+          projectRoot = path.resolve(projectPath);
+          // filePath is already set from options.file
+        } else {
+          // Case: docflu sync --file /absolute/path/to/file.md
+          // Need to determine project root from file path
+          const absoluteFilePath = path.resolve(options.file);
+          
+          // Try to find project root by looking for docusaurus.config.* or .env
+          let currentDir = path.dirname(absoluteFilePath);
+          let foundProjectRoot = null;
+          
+          while (currentDir !== path.dirname(currentDir)) { // Until we reach filesystem root
+            const hasDocusaurusConfig = require('fs-extra').pathExistsSync(path.join(currentDir, 'docusaurus.config.ts')) ||
+                                       require('fs-extra').pathExistsSync(path.join(currentDir, 'docusaurus.config.js'));
+            const hasEnvFile = require('fs-extra').pathExistsSync(path.join(currentDir, '.env'));
+            
+            if (hasDocusaurusConfig || hasEnvFile) {
+              foundProjectRoot = currentDir;
+              break;
+            }
+            currentDir = path.dirname(currentDir);
+          }
+          
+          projectRoot = foundProjectRoot || path.dirname(absoluteFilePath);
+          filePath = path.relative(projectRoot, absoluteFilePath);
+        }
+      } else {
+        // Case: docflu sync /project/path --docs/--blog
+        projectRoot = projectPath ? path.resolve(projectPath) : process.cwd();
+      }
 
       // Determine platform - default to Confluence for backward compatibility
       const platform = options.gdocs ? 'google-docs' : 'confluence';
@@ -41,13 +76,13 @@ program
       }
 
       if (options.file) {
-        console.log(chalk.blue(`🚀 Syncing single file to ${platform}:`, options.file));
+        console.log(chalk.blue(`🚀 Syncing single file to ${platform}:`, filePath));
         console.log(chalk.gray('📂 Project root:', projectRoot));
         
         if (platform === 'google-docs') {
-          await syncGoogleDocs('file', options.file, options.dryRun, projectRoot);
+          await syncGoogleDocs('file', filePath, options.dryRun, projectRoot);
         } else {
-          await syncFile(options.file, options.dryRun, projectRoot);
+          await syncFile(filePath, options.dryRun, projectRoot);
         }
       } else if (options.docs) {
         console.log(chalk.blue(`🚀 Syncing all docs/ to ${platform}`));

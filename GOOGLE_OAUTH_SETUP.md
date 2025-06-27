@@ -2,73 +2,73 @@
 
 ## 🎯 Overview
 
-Để sử dụng tính năng sync Google Docs, bạn cần setup OAuth2 credentials trong Google Cloud Console. docflu sử dụng **OAuth2 with PKCE flow** - phương pháp bảo mật cho CLI applications.
+To use Google Docs sync functionality, you need to setup OAuth2 credentials in Google Cloud Console. docflu uses **OAuth2 with PKCE flow** - a secure method for CLI applications.
 
-**⚠️ Lưu ý quan trọng**: Mặc dù OAuth2 PKCE spec không yêu cầu `client_secret` cho Desktop applications, nhưng Google's implementation vẫn yêu cầu cả `client_id` và `client_secret` ngay cả cho Desktop apps.
+**⚠️ Important Note**: Although OAuth2 PKCE spec doesn't require `client_secret` for Desktop applications, Google's implementation still requires both `client_id` and `client_secret` even for Desktop apps.
 
 ## 📋 Prerequisites
 
 - Google account
-- Project cần sync (Docusaurus hoặc markdown files)
-- docflu CLI đã được cài đặt
+- Project to sync (Docusaurus or markdown files)
+- docflu CLI installed
 
 ## 🔧 Step-by-Step Setup
 
-### 1. Tạo Google Cloud Project
+### 1. Create Google Cloud Project
 
-1. Truy cập [Google Cloud Console](https://console.cloud.google.com/)
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
 2. Click **"Select a project"** → **"New Project"**
-3. Nhập project name: `docflu-sync` (hoặc tên bạn muốn)
+3. Enter project name: `docflu-sync` (or your preferred name)
 4. Click **"Create"**
 
 ### 2. Enable Google Docs API
 
-1. Trong project vừa tạo, vào **"APIs & Services"** → **"Library"**
+1. In the newly created project, go to **"APIs & Services"** → **"Library"**
 2. Search **"Google Docs API"**
-3. Click vào **"Google Docs API"**
+3. Click on **"Google Docs API"**
 4. Click **"Enable"**
 
-### 3. Tạo OAuth2 Credentials
+### 3. Create OAuth2 Credentials
 
-1. Vào **"APIs & Services"** → **"Credentials"**
+1. Go to **"APIs & Services"** → **"Credentials"**
 2. Click **"+ CREATE CREDENTIALS"** → **"OAuth client ID"**
-3. Nếu chưa có OAuth consent screen:
+3. If you don't have OAuth consent screen yet:
    - Click **"CONFIGURE CONSENT SCREEN"**
-   - Chọn **"External"** → **"Create"**
-   - Điền thông tin cơ bản:
+   - Select **"External"** → **"Create"**
+   - Fill in basic information:
      - App name: `docflu CLI`
      - User support email: your-email@gmail.com
      - Developer contact: your-email@gmail.com
-   - Click **"Save and Continue"** qua các bước
-   - Quay lại **"Credentials"**
+   - Click **"Save and Continue"** through the steps
+   - Return to **"Credentials"**
 
-4. Tạo OAuth client ID:
+4. Create OAuth client ID:
    - Application type: **"Desktop application"**
    - Name: `docflu CLI Client`
    - Click **"Create"**
 
-### 4. Lấy Credentials
+### 4. Get Credentials
 
-**⚠️ QUAN TRỌNG**: Desktop application KHÔNG cần configure redirect URIs manually. Google tự động cho phép loopback addresses.
+**⚠️ IMPORTANT**: Desktop applications do NOT need to configure redirect URIs manually. Google automatically allows loopback addresses.
 
-1. Trong danh sách credentials, click vào **"docflu CLI Client"**
+1. In the credentials list, click on **"docflu CLI Client"**
 2. Copy **Client ID**: Format `123456789-abc123.apps.googleusercontent.com`
 3. Copy **Client Secret**: Format `GOCSPX-...` 
-4. **Lưu ý**: Mặc dù là Desktop app, Google vẫn yêu cầu client secret
+4. **Note**: Even though it's a Desktop app, Google still requires client secret
 
 ## 🔑 Configure docflu
 
 ### 1. Setup .env file
 
 ```bash
-# Trong project directory
+# In project directory
 docflu init
 
-# Hoặc tạo .env manually
+# Or create .env manually
 cp env.example .env
 ```
 
-### 2. Cập nhật Google OAuth2 Credentials
+### 2. Update Google OAuth2 Credentials
 
 Edit `.env` file:
 
@@ -79,7 +79,7 @@ GOOGLE_CLIENT_SECRET=GOCSPX-xxx
 GOOGLE_DOCUMENT_TITLE=Documentation
 ```
 
-**🔒 Security Note**: Client secret cho Desktop apps không thực sự "secret" vì có thể được reverse engineer. Google vẫn yêu cầu để validate client identity.
+**🔒 Security Note**: Client secret for Desktop apps is not truly "secret" as it can be reverse engineered. Google still requires it to validate client identity.
 
 ### 3. Test Configuration
 
@@ -98,50 +98,50 @@ docflu sync --gdocs --docs --dry-run
 docflu sync --gdocs --docs
 ```
 
-OAuth2 Flow sẽ:
-1. 🔐 Mở browser để authenticate
+OAuth2 Flow will:
+1. 🔐 Open browser for authentication
 2. ✅ User approve docflu CLI access
 3. 🔄 Exchange authorization code + PKCE verifier
 4. 🔑 Save tokens to `.docusaurus/google-tokens.json`
-5. 📄 Tạo Google Docs document
-6. 📝 Thêm dummy content với formatting
-7. ✅ Hiển thị kết quả và URL
+5. 📄 Create Google Docs document
+6. 📝 Add dummy content with formatting
+7. ✅ Display results and URL
 
 ## 🔍 Troubleshooting
 
 ### Error: "OAuth client was not found"
 
-- ✅ Kiểm tra GOOGLE_CLIENT_ID trong .env
+- ✅ Check GOOGLE_CLIENT_ID in .env
 - ✅ Verify client ID format: `*-*.apps.googleusercontent.com`
-- ✅ Đảm bảo OAuth client type là "Desktop application"
+- ✅ Ensure OAuth client type is "Desktop application"
 
 ### Error: "client_secret is missing"
 
-- ✅ Thêm GOOGLE_CLIENT_SECRET vào .env file
+- ✅ Add GOOGLE_CLIENT_SECRET to .env file
 - ✅ Verify client secret format: `GOCSPX-...`
-- ✅ Copy chính xác từ Google Cloud Console
+- ✅ Copy exactly from Google Cloud Console
 
 ### Error: "invalid_request"
 
-- ✅ Kiểm tra Google Docs API đã enabled
-- ✅ Port 8080 không bị block
-- ✅ Verify cả client_id và client_secret đều đúng
+- ✅ Check Google Docs API is enabled
+- ✅ Port 8080 is not blocked
+- ✅ Verify both client_id and client_secret are correct
 
 ### Error: "access_denied"
 
-- ✅ Approve application trong browser
-- ✅ Kiểm tra Google account permissions
-- ✅ Thử authenticate lại
+- ✅ Approve application in browser
+- ✅ Check Google account permissions
+- ✅ Try authenticating again
 
 ### Error: "redirect_uri_mismatch"
 
-- ✅ Desktop apps không cần configure redirect URIs
-- ✅ Google tự động accept `http://127.0.0.1:8080/callback`
-- ✅ Đảm bảo port 8080 available
+- ✅ Desktop apps don't need to configure redirect URIs
+- ✅ Google automatically accepts `http://127.0.0.1:8080/callback`
+- ✅ Ensure port 8080 is available
 
 ## 📊 Expected Results
 
-Khi thành công, bạn sẽ thấy:
+When successful, you will see:
 
 ```bash
 🚀 Syncing all docs/ to google-docs
@@ -172,22 +172,22 @@ Khi thành công, bạn sẽ thấy:
 
 ## 🔒 Security Notes
 
-- **PKCE + Client Secret**: Google yêu cầu cả hai cho Desktop apps
-- **Local Tokens**: Tokens được lưu trong `.docusaurus/google-tokens.json`
-- **Auto Refresh**: Tokens tự động refresh khi hết hạn
-- **Localhost Only**: OAuth callback chỉ hoạt động trên localhost:8080
-- **No Redirect URI Config**: Desktop apps không cần manual redirect URI setup
+- **PKCE + Client Secret**: Google requires both for Desktop apps
+- **Local Tokens**: Tokens are saved in `.docusaurus/google-tokens.json`
+- **Auto Refresh**: Tokens automatically refresh when expired
+- **Localhost Only**: OAuth callback only works on localhost:8080
+- **No Redirect URI Config**: Desktop apps don't need manual redirect URI setup
 
 ## 🎯 Implementation Details
 
-### OAuth2 Flow với Google
+### OAuth2 Flow with Google
 
-1. **Authorization Request**: Tạo PKCE code_verifier + code_challenge
-2. **User Consent**: Mở browser cho user approve
-3. **Authorization Code**: Nhận code từ Google callback
-4. **Token Exchange**: Gửi code + code_verifier + client_secret
-5. **Access Token**: Nhận tokens và save local
-6. **API Calls**: Sử dụng access token cho Google Docs API
+1. **Authorization Request**: Generate PKCE code_verifier + code_challenge
+2. **User Consent**: Open browser for user approval
+3. **Authorization Code**: Receive code from Google callback
+4. **Token Exchange**: Send code + code_verifier + client_secret
+5. **Access Token**: Receive tokens and save locally
+6. **API Calls**: Use access token for Google Docs API
 
 ### File Structure
 
@@ -202,12 +202,12 @@ your-project/
 
 ## 🆘 Support
 
-Nếu gặp vấn đề:
+If you encounter issues:
 
-1. **Kiểm tra Credentials**:
+1. **Check Credentials**:
    ```bash
    grep GOOGLE_ .env
-   # Phải có cả CLIENT_ID và CLIENT_SECRET
+   # Must have both CLIENT_ID and CLIENT_SECRET
    ```
 
 2. **Test Client Setup**:
@@ -218,11 +218,11 @@ Nếu gặp vấn đề:
 3. **Check Google Cloud Console**:
    - Google Docs API enabled
    - OAuth client type = Desktop application
-   - Credentials chính xác
+   - Credentials are correct
 
 4. **Network Issues**:
    - Port 8080 available
-   - Firewall không block localhost
+   - Firewall doesn't block localhost
    - Internet connection stable
 
 5. **Resources**:
@@ -232,6 +232,6 @@ Nếu gặp vấn đề:
 
 ---
 
-**🎯 Status**: ✅ OAuth2 authentication thành công → ✅ Google Docs API hoạt động → 🚀 Ready cho markdown parsing!
+**🎯 Status**: ✅ OAuth2 authentication successful → ✅ Google Docs API working → 🚀 Ready for markdown parsing!
 
-**Next Phase**: Implement markdown parsing, tab hierarchy, và content conversion cho Google Docs format. 
+**Next Phase**: Implement markdown parsing, tab hierarchy, and content conversion for Google Docs format. 
