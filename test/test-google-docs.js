@@ -1,4 +1,4 @@
-const GoogleDocsClient = require('../lib/core/google-docs-client');
+const GoogleDocsClient = require('../lib/core/gdocs/google-docs-client');
 const chalk = require('chalk');
 const path = require('path');
 

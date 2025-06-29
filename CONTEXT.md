@@ -512,7 +512,8 @@ node bin/docflu.js sync --docs  # Second run: 8 skipped (no changes)
 lib/core/gdocs/
 ├── google-docs-converter.js    # ✅ Markdown → Google Docs conversion
 ├── google-docs-state.js        # ✅ State management for Google Docs
-└── google-docs-sync.js          # ✅ Main sync orchestrator
+├── google-docs-sync.js         # ✅ Main sync orchestrator
+└── google-docs-client.js       # ✅ Google Docs API client with OAuth2 PKCE
 
 test/gdocs/
 ├── test-converter.js           # ✅ Converter testing
