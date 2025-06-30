@@ -41,18 +41,20 @@ async function testGoogleDocsConverter() {
     console.log(chalk.gray(`   Input: ${markdown.replace(/\n/g, '\\n')}`));
     console.log(chalk.gray(`   Output: ${requests ? requests.length : 'undefined'} requests`));
     
-    // Should have insertText and updateTextStyle requests for each heading
-    if (requests && requests.length > 0) {
-      const headingRequests = requests.filter(r => r.updateTextStyle && r.updateTextStyle.textStyle && r.updateTextStyle.textStyle.bold);
+    // Should have text insertion and formatting data
+    const { formattingForStep2 } = result;
+    if (requests && requests.length >= 3 && formattingForStep2 && formattingForStep2.length >= 3) {
+      const hasHeadingText = requests.some(r => r.insertText && r.insertText.text.includes('Main Title'));
+      const hasHeadingFormatting = formattingForStep2.some(f => f.type === 'heading' && f.level === 1);
       
-      if (headingRequests.length >= 3) {
+      if (hasHeadingText && hasHeadingFormatting) {
         console.log(chalk.green('   ✅ Heading test passed'));
         testsPassed++;
       } else {
-        console.log(chalk.red('   ❌ Heading test failed'));
+        console.log(chalk.red('   ❌ Heading test failed - missing text or formatting'));
       }
     } else {
-      console.log(chalk.red('   ❌ Heading test failed - no requests'));
+      console.log(chalk.red('   ❌ Heading test failed - insufficient data'));
     }
   } catch (error) {
     console.log(chalk.red('   ❌ Heading test error:', error.message));
@@ -69,22 +71,20 @@ async function testGoogleDocsConverter() {
     console.log(chalk.gray(`   Input: ${markdown.replace(/\n/g, '\\n')}`));
     console.log(chalk.gray(`   Output: ${requests ? requests.length : 'undefined'} requests`));
     
-    // Should have code formatting
-    if (requests && requests.length > 0) {
-      const codeFormatting = requests.find(r => 
-        r.updateTextStyle && 
-        r.updateTextStyle.textStyle && 
-        r.updateTextStyle.textStyle.fontFamily === 'Courier New'
-      );
+    // Should have text insertion and formatting data
+    const { formattingForStep2 } = result;
+    if (requests && requests.length > 0 && formattingForStep2 && formattingForStep2.length > 0) {
+      const hasCodeText = requests.some(r => r.insertText && r.insertText.text.includes('console.log'));
+      const hasCodeFormatting = formattingForStep2.some(f => f.type === 'code_block' && f.language === 'javascript');
       
-      if (codeFormatting) {
+      if (hasCodeText && hasCodeFormatting) {
         console.log(chalk.green('   ✅ Code block test passed'));
         testsPassed++;
       } else {
-        console.log(chalk.red('   ❌ Code block test failed'));
+        console.log(chalk.red('   ❌ Code block test failed - missing text or formatting'));
       }
     } else {
-      console.log(chalk.red('   ❌ Code block test failed - no requests'));
+      console.log(chalk.red('   ❌ Code block test failed - insufficient data'));
     }
   } catch (error) {
     console.log(chalk.red('   ❌ Code block test error:', error.message));
@@ -101,17 +101,17 @@ async function testGoogleDocsConverter() {
     console.log(chalk.gray(`   Input: ${markdown.replace(/\n/g, '\\n')}`));
     console.log(chalk.gray(`   Output: ${requests ? requests.length : 'undefined'} requests`));
     
-    // Should have bullet points
+    // Should have list text with bullet points
     if (requests && requests.length > 0) {
-      const listItems = requests.filter(r => 
+      const listText = requests.find(r => 
         r.insertText && r.insertText.text && r.insertText.text.includes('•')
       );
       
-      if (listItems.length >= 3) {
+      if (listText && listText.insertText.text.includes('Item 1') && listText.insertText.text.includes('Item 2')) {
         console.log(chalk.green('   ✅ List test passed'));
         testsPassed++;
       } else {
-        console.log(chalk.red('   ❌ List test failed'));
+        console.log(chalk.red('   ❌ List test failed - missing list content'));
       }
     } else {
       console.log(chalk.red('   ❌ List test failed - no requests'));
@@ -131,26 +131,20 @@ async function testGoogleDocsConverter() {
     console.log(chalk.gray(`   Input: ${markdown}`));
     console.log(chalk.gray(`   Output: ${requests ? requests.length : 'undefined'} requests`));
     
-    // Should have bold, italic, and code formatting
-    if (requests && requests.length > 0) {
-      const boldFormatting = requests.find(r => 
-        r.updateTextStyle && r.updateTextStyle.textStyle && r.updateTextStyle.textStyle.bold
-      );
-      const italicFormatting = requests.find(r => 
-        r.updateTextStyle && r.updateTextStyle.textStyle && r.updateTextStyle.textStyle.italic
-      );
-      const codeFormatting = requests.find(r => 
-        r.updateTextStyle && r.updateTextStyle.textStyle && r.updateTextStyle.textStyle.backgroundColor
-      );
+    // Should have text insertion and formatting data
+    const { formattingForStep2 } = result;
+    if (requests && requests.length > 0 && formattingForStep2 && formattingForStep2.length > 0) {
+      const hasText = requests.some(r => r.insertText && r.insertText.text.includes('This is bold and italic and code'));
+      const hasFormatting = formattingForStep2.some(f => f.type === 'paragraph' && f.formats && f.formats.length >= 3);
       
-      if (boldFormatting && italicFormatting && codeFormatting) {
+      if (hasText && hasFormatting) {
         console.log(chalk.green('   ✅ Inline formatting test passed'));
         testsPassed++;
       } else {
-        console.log(chalk.red('   ❌ Inline formatting test failed'));
+        console.log(chalk.red('   ❌ Inline formatting test failed - missing text or formatting'));
       }
     } else {
-      console.log(chalk.red('   ❌ Inline formatting test failed - no requests'));
+      console.log(chalk.red('   ❌ Inline formatting test failed - insufficient data'));
     }
   } catch (error) {
     console.log(chalk.red('   ❌ Inline formatting test error:', error.message));
