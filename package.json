@@ -39,7 +39,8 @@
   },
   "optionalDependencies": {
     "@mermaid-js/mermaid-cli": "^10.6.1",
-    "sharp": "^0.33.5"
+    "sharp": "^0.33.5",
+    "plantuml-encoder": "^1.4.0"
   },
   "engines": {
     "node": ">=16.0.0"

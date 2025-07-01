@@ -97,7 +97,7 @@ const result = await processor.processImages(markdown, filePath);
 
 **Comprehensive Diagram Support:**
 - **Mermaid**: Enhanced PNG generation optimized for Google Docs
-- **PlantUML**: Java-based diagram generation with PNG output
+- **PlantUML**: Server-based diagram generation with Node.js plantuml-encoder package
 - **Graphviz**: DOT language diagram processing with PNG format
 - **D2**: Modern diagram language support with PNG output
 
@@ -121,6 +121,38 @@ const mermaidConfig = {
     fontFamily: "Arial, Helvetica, sans-serif"
   }
 };
+```
+
+**PlantUML Implementation:**
+```javascript
+// Modern PlantUML processing with server-based generation
+async generatePlantUMLImage(diagram) {
+  try {
+    const plantumlEncoder = require('plantuml-encoder');
+    const axios = require('axios');
+    
+    // Encode PlantUML diagram
+    const encoded = plantumlEncoder.encode(diagram.code);
+    
+    // Generate PNG using PlantUML server
+    const plantUMLServerUrl = `http://www.plantuml.com/plantuml/png/${encoded}`;
+    
+    const response = await axios({
+      method: 'GET',
+      url: plantUMLServerUrl,
+      responseType: 'arraybuffer',
+      timeout: 30000
+    });
+    
+    const pngBuffer = Buffer.from(response.data);
+    await fs.writeFile(outputFile, pngBuffer);
+    
+    return outputFile;
+  } catch (error) {
+    // Fallback to Java CLI if available
+    return this.generatePlantUMLWithJava(diagram);
+  }
+}
 ```
 
 **Processing Method:**
@@ -683,6 +715,19 @@ graph TD
 ```
 ```
 
+#### PlantUML Diagrams
+```markdown
+```plantuml
+@startuml
+Alice -> Bob: Hello World
+Bob -> Alice: Hi there!
+note right: This is a note
+Alice -> Bob: How are you?
+Bob -> Alice: I'm fine, thanks!
+@enduml
+```
+```
+
 #### Local Images
 ```markdown
 ![Architecture Diagram](./images/architecture.png)
@@ -728,6 +773,13 @@ graph TD
    - Error detection and recovery
    - Debug file generation with full context
 
+5. **✅ PlantUML Server Integration**
+   - Replaced Java-based PlantUML with server-based generation
+   - Node.js plantuml-encoder package for encoding
+   - HTTP-based PNG generation via PlantUML.com server
+   - Automatic fallback to Java CLI if server fails
+   - No local Java installation required for basic usage
+
 ### Planned Features (Phase 3)
 
 1. **Diagram Enhancements**
@@ -759,10 +811,11 @@ graph TD
 ### Dependencies
 
 - `@mermaid-js/mermaid-cli`: Mermaid diagram generation
+- `plantuml-encoder`: PlantUML diagram encoding and server-based generation
 - `googleapis`: Google APIs integration
 - `fs-extra`: Enhanced file operations
 - `crypto`: SHA256 hashing for caching
-- `axios`: HTTP requests for remote images
+- `axios`: HTTP requests for remote images and PlantUML server
 - `mime-types`: MIME type detection for images
 - `chalk`: Colored console output
 
