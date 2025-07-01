@@ -21,12 +21,23 @@ To use Google Docs sync functionality, you need to setup OAuth2 credentials in G
 3. Enter project name: `docflu-sync` (or your preferred name)
 4. Click **"Create"**
 
-### 2. Enable Google Docs API
+### 2. Enable Required APIs
 
+#### 2.1 Enable Google Docs API
 1. In the newly created project, go to **"APIs & Services"** → **"Library"**
 2. Search **"Google Docs API"**
 3. Click on **"Google Docs API"**
 4. Click **"Enable"**
+
+#### 2.2 Enable Google Drive API (Required for Image Upload)
+1. In **"APIs & Services"** → **"Library"**
+2. Search **"Google Drive API"**
+3. Click on **"Google Drive API"**
+4. Click **"Enable"**
+
+**⚠️ Important**: Both APIs are required for full functionality:
+- **Google Docs API**: Document creation and content insertion
+- **Google Drive API**: Image upload and file management
 
 ### 3. Create OAuth2 Credentials
 
@@ -40,7 +51,14 @@ To use Google Docs sync functionality, you need to setup OAuth2 credentials in G
      - User support email: your-email@gmail.com
      - Developer contact: your-email@gmail.com
    - Click **"Save and Continue"** through the steps
-   - Return to **"Credentials"**
+   
+   **🔐 IMPORTANT - Configure Sensitive Scopes**:
+   - In **"Scopes"** step, click **"ADD OR REMOVE SCOPES"**
+   - Search and add the following scopes:
+     - `https://www.googleapis.com/auth/documents` (Google Docs)
+     - `https://www.googleapis.com/auth/drive.file` (Google Drive - file access)
+   - Click **"UPDATE"** → **"Save and Continue"**
+   - Complete remaining steps and return to **"Credentials"**
 
 4. Create OAuth client ID:
    - Application type: **"Desktop application"**
@@ -187,7 +205,20 @@ When successful, you will see:
 3. **Authorization Code**: Receive code from Google callback
 4. **Token Exchange**: Send code + code_verifier + client_secret
 5. **Access Token**: Receive tokens and save locally
-6. **API Calls**: Use access token for Google Docs API
+6. **API Calls**: Use access token for Google Docs API and Google Drive API
+
+### Required OAuth2 Scopes
+
+```javascript
+const SCOPES = [
+  'https://www.googleapis.com/auth/documents',      // Google Docs API
+  'https://www.googleapis.com/auth/drive.file'      // Google Drive API (file upload)
+];
+```
+
+**Scope Descriptions**:
+- **documents**: Create, read, update Google Docs documents
+- **drive.file**: Upload and manage files created by the application
 
 ### File Structure
 
