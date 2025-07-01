@@ -38,7 +38,8 @@
     "ora": "^5.4.1"
   },
   "optionalDependencies": {
-    "@mermaid-js/mermaid-cli": "^10.6.1"
+    "@mermaid-js/mermaid-cli": "^10.6.1",
+    "sharp": "^0.33.5"
   },
   "engines": {
     "node": ">=16.0.0"
@@ -75,5 +76,9 @@
   "bugs": {
     "url": "https://github.com/tuanpmt/docflu/issues"
   },
-  "homepage": "https://github.com/tuanpmt/docflu#readme"
+  "homepage": "https://github.com/tuanpmt/docflu#readme",
+  "devDependencies": {
+    "chai": "^5.2.0",
+    "mocha": "^11.7.1"
+  }
 }

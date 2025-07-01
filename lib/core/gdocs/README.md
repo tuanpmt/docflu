@@ -9,7 +9,15 @@ gdocs/
 ├── google-docs-client.js     # Google OAuth2 & API client
 ├── google-docs-converter.js  # Markdown → Google Docs converter
 ├── google-docs-state.js      # State management
-└── google-docs-sync.js       # Main sync orchestrator
+├── google-docs-sync.js       # Main sync orchestrator
+├── google-drive-client.js    # Google Drive API for image storage
+├── gdocs-image-processor.js  # Image processing orchestrator
+├── diagram-processor.js      # Google Docs diagram processor
+├── image-processor.js        # Google Docs image processor
+├── table-converter.js        # Table conversion logic
+├── backup.js                 # Backup system
+├── README.md                 # This documentation
+└── DEBUG.md                  # Debug guide
 ```
 
 ## 📄 File Details
@@ -243,28 +251,33 @@ docflu sync --gdocs --dry-run
 docflu sync --gdocs --force
 ```
 
-## ⚠️ Known Limitations
+## ✅ Implemented Features
 
 1. **Images**:
-   - No image upload support yet
-   - Local images are not processed
-   - Affects Mermaid diagrams rendering
+   - ✅ Complete image upload support via Google Drive API
+   - ✅ Local and remote image processing with SHA256 caching
+   - ✅ Mermaid diagram rendering and insertion as native images
+   - ✅ HTML `<img>` tag processing with full attribute extraction
+   - ✅ SVG to PNG conversion using Sharp for Google Docs compatibility
 
 2. **Tables**:
-   - No markdown table conversion
-   - Complex table processing not implemented
+   - ✅ Complete markdown table conversion with 2-step architecture
+   - ✅ Complex table processing (11x11, 6x12+ structures supported)
+   - ✅ 100% automated table cell population
 
-3. **Internal Links**:
+## ⚠️ Known Limitations
+
+1. **Internal Links**:
    - Not feasible due to Google Docs API limitations
    - All content consolidated in single document
    - Links converted to plain text
 
-4. **Content Organization**:
+2. **Content Organization**:
    - No tab hierarchy support (Google Docs API limitation)
    - All content appended to single document
    - Alternative organization strategy needed
 
-5. **Authentication**:
+3. **Authentication**:
    - Requires both Client ID and Client Secret (Google's Desktop App requirement)
    - Browser must be available for consent flow
    - Localhost port 8080 must be available
