@@ -15,7 +15,8 @@ gdocs/
 ├── diagram-processor.js      # Google Docs diagram processor
 ├── image-processor.js        # Google Docs image processor
 ├── table-converter.js        # Table conversion logic
-├── backup.js                 # Backup system
+├── link-processor.js         # Link and attachment processing
+├── attachment-processor.js   # File attachment processing
 ├── README.md                 # This documentation
 └── DEBUG.md                  # Debug guide
 ```
@@ -91,7 +92,7 @@ const requests = converter.convertFromMarkdown(markdownContent);
 - `createList(items, ordered, startIndex)` - Generate list requests
 - `processInlineFormatting(text)` - Handle bold, italic, code formatting
 
-### 3. google-docs-state.js
+### 7. google-docs-state.js
 
 **Purpose**: Manage sync state and document tracking
 
@@ -150,7 +151,7 @@ await state.updateDocument('docs/intro.md', { documentId: 'abc123', title: 'Intr
 - `updateStats(operation)` - Update sync statistics
 - `save()` - Save state to `.docusaurus/google-docs-state.json`
 
-### 4. google-docs-sync.js
+### 8. google-docs-sync.js
 
 **Purpose**: Orchestrate the entire sync process
 
@@ -265,6 +266,14 @@ docflu sync --gdocs --force
    - ✅ Complex table processing (11x11, 6x12+ structures supported)
    - ✅ 100% automated table cell population
 
+3. **Links & Attachments**:
+   - ✅ External link processing with 2-phase Google Docs integration
+   - ✅ Local file attachment upload to Google Drive
+   - ✅ Multiple file references support (same file, different text)
+   - ✅ SHA256-based file caching to avoid duplicate uploads
+   - ✅ Backtick formatting preservation in file references
+   - ✅ Batch processing for performance optimization
+
 ## ⚠️ Known Limitations
 
 1. **Internal Links**:
@@ -313,4 +322,67 @@ docflu sync --gdocs --force
 - [Google Docs API](https://developers.google.com/docs/api)
 - [OAuth 2.0 for Mobile & Desktop](https://developers.google.com/identity/protocols/oauth2/native-app)
 - [Google OAuth2 PKCE Flow](https://developers.google.com/identity/protocols/oauth2/native-app#step1-code-verifier)
-- [Markdown-it Documentation](https://markdown-it.github.io/) 
+- [Markdown-it Documentation](https://markdown-it.github.io/)
+
+### 5. link-processor.js
+
+**Purpose**: Process external links and local file attachments for Google Docs
+
+```javascript
+const linkProcessor = new LinkProcessor(driveClient, projectRoot, state);
+await linkProcessor.initialize();
+const result = await linkProcessor.processLinks(markdownContent, filePath);
+// result = { processedMarkdown, linkRequests, stats }
+```
+
+**Key Features**:
+- **External Links**: Convert markdown links to Google Docs format with 2-phase processing
+- **File Attachments**: Upload local files to Google Drive and create download links
+- **Deduplication**: Handle multiple references to same file efficiently
+- **Backtick Support**: Preserve backtick formatting in file references
+- **Batch Processing**: Process multiple links in single API call for performance
+- **Smart Caching**: SHA256-based file caching to avoid duplicate uploads
+
+**Processing Pipeline**:
+1. Extract all links from markdown (external + local files)
+2. Filter out internal markdown links (.md, .mdx files)
+3. Upload local files to Google Drive with caching
+4. Generate unique placeholders for each link
+5. Replace links with placeholders in markdown
+6. Return link requests for Google Docs formatting
+
+**Main Methods**:
+- `processLinks(markdown, filePath)` - Main processing method
+- `extractLinks(markdown)` - Extract all links from content
+- `generateLinkRequests(links, filePath)` - Create link formatting requests
+- `getStats()` - Get processing statistics
+
+### 6. attachment-processor.js
+
+**Purpose**: Handle file upload and caching for Google Drive integration
+
+```javascript
+const attachmentProcessor = new AttachmentProcessor(driveClient, stateManager);
+const result = await attachmentProcessor.processAttachment(filePath);
+// result = { url, cached, fileName, hash }
+```
+
+**Key Features**:
+- **SHA256 Hashing**: Generate unique hashes for file content
+- **Smart Caching**: Avoid re-uploading identical files
+- **Google Drive Integration**: Upload files to dedicated folder
+- **File Type Support**: Support all file types with proper MIME detection
+- **State Management**: Persistent cache across sync sessions
+- **Error Handling**: Graceful handling of upload failures
+
+**Cache Strategy**:
+- Files hashed with SHA256 for content-based deduplication
+- Cache stored in Google Docs state for persistence
+- Public sharing enabled for Google Docs access
+- Automatic cleanup of temporary files
+
+**Main Methods**:
+- `processAttachment(filePath)` - Upload file with caching
+- `generateFileHash(filePath)` - Generate SHA256 hash
+- `uploadToGoogleDrive(filePath, hash)` - Upload file to Drive
+- `getStats()` - Get upload statistics 
