@@ -84,6 +84,9 @@ program
         } else {
           await syncFile(filePath, options.dryRun, projectRoot);
         }
+        
+        // Ensure process exits cleanly
+        process.exit(0);
       } else if (options.docs) {
         console.log(chalk.blue(`🚀 Syncing all docs/ to ${platform}`));
         console.log(chalk.gray('📂 Project root:', projectRoot));
@@ -93,6 +96,9 @@ program
         } else {
           await syncDocs(options.dryRun, projectRoot);
         }
+        
+        // Ensure process exits cleanly
+        process.exit(0);
       } else if (options.blog) {
         console.log(chalk.blue(`🚀 Syncing all blog/ to ${platform}`));
         console.log(chalk.gray('📂 Project root:', projectRoot));
@@ -102,6 +108,9 @@ program
         } else {
           await syncBlog(options.dryRun, projectRoot);
         }
+        
+        // Ensure process exits cleanly
+        process.exit(0);
       } else {
         console.log(chalk.red('❌ Please specify --file, --docs, or --blog option'));
         console.log('Examples:');
@@ -129,6 +138,9 @@ program
       const projectRoot = projectPath ? path.resolve(projectPath) : process.cwd();
       console.log(chalk.gray('📂 Project root:', projectRoot));
       await initProject(projectRoot);
+      
+      // Ensure process exits cleanly
+      process.exit(0);
     } catch (error) {
       console.error(chalk.red('❌ Error:', error.message));
       process.exit(1);
