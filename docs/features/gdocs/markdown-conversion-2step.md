@@ -242,6 +242,37 @@ The converter now implements a comprehensive color scheme:
 **Status**: ✅ Resolved
 **Solution**: Use proper Google Docs API field names
 
+### Issue 4: Heading Text Conflict ✅ **FIXED**
+**Problem**: Level 2 headings (##) formatted as normal text (11pt) instead of heading style (18pt) due to text conflicts with Table of Contents
+**Root Cause**: 
+- `findTextInDocument()` finds first occurrence of heading text in TOC instead of actual heading
+- Text like "Headings" appears both in `[Headings](#headings)` and `## Headings`
+**Solution**: 
+- Implemented **position-based matching** instead of text-based search
+- Added `calculateRequestPositions()` to track exact positions using `requestIndex`
+- Enhanced `findTextInDocument()` to prefer heading patterns (followed by `\n\n`)
+- Updated both `createFormattingRequests()` and `createFormattingRequestsWithScope()`
+**Result**: ✅ Only actual headings are formatted, TOC text remains untouched
+
+### Issue 5: Batch Processing Title Formatting ✅ **FIXED**
+**Problem**: In batch processing mode (`syncDocumentAppend`), document titles were only formatting the first character instead of the full title. For example, "Complete Markdown Guide 3" would only bold the "C" instead of the entire title.
+**Root Cause**: 
+- Multiple documents with similar titles in batch mode caused position-based matching to fail
+- `calculateRequestPositions()` couldn't find document titles in filtered scope (`contentStartIndex+`)
+- Document titles were inserted at the beginning but scope filtering excluded them
+**Solution**: 
+- Enhanced fallback mechanism in `createFormattingRequestsWithScope()`
+- Added full document search as last resort when scope filtering fails
+- Implemented level-based exception for document titles (level 1 headings)
+- Added comprehensive debug logging to track position calculation
+**Debug Evidence**:
+```
+🐛 Position-based matching failed for heading: "Complete Markdown Guide 3", trying fallback text search...
+🐛 Found heading in full document search: "Complete Markdown Guide 3" → 25698
+🐛 Using fallback text search for heading: "Complete Markdown Guide 3" → 25698-25723
+```
+**Result**: ✅ Document titles in batch mode now format correctly with proper heading styles (20pt, bold)
+
 ## 🚀 Usage
 
 ### Basic Sync
