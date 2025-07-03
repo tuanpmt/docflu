@@ -28,7 +28,7 @@ const state = new NotionState(projectRoot, config);
 
 ```javascript
 // State file location
-const stateFile = path.join(projectRoot, '.docflu', 'notion-state.json');
+const stateFile = path.join(projectRoot, '.docusaurus', 'notion-state.json');
 ```
 
 ### State Schema
@@ -647,7 +647,7 @@ console.log(`Cleaned up ${cleanup.orphanedPages.length} orphaned pages`);
 ### Common Issues
 
 1. **State File Corruption**: Use `resetState()` to recover
-2. **Permission Issues**: Check write permissions on `.docflu` directory
+2. **Permission Issues**: Check write permissions on `.docusaurus` directory
 3. **Cache Issues**: Use `cleanupExpiredCache()` to clear stale entries
 4. **Memory Usage**: Monitor state file size and cleanup regularly
 

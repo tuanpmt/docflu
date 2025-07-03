@@ -1036,7 +1036,7 @@ project/
 │   ├── files/          # File attachments
 │   └── img/           # Images
 ├── docs/              # Documentation files
-└── .docflu/
+└── .docusaurus/
     ├── notion-state.json    # Notion sync state
     └── gdocs-state.json     # Google Docs sync state
 ```

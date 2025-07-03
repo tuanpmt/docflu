@@ -56,7 +56,7 @@ constructor(notionClient, state, config, authToken = null) {
   this.fileUploader = new NotionFileUploader(notionClient, this.authToken);
   
   // Temporary directory for processing
-  this.tempDir = path.join(process.cwd(), '.docflu', 'temp', 'notion-diagrams');
+  this.tempDir = path.join(process.cwd(), '.docusaurus', 'temp', 'notion-diagrams');
   fs.ensureDirSync(this.tempDir);
 }
 ```
