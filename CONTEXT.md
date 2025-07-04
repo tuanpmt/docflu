@@ -755,29 +755,31 @@ test/gdocs/
 
 ## Recent Updates
 
-### 2025-01-27: Notion Auto Root Page Creation
-- **Enhancement**: Made `NOTION_ROOT_PAGE_ID` optional in configuration
-- **New Feature**: Automatic root page creation with `getOrCreateRootPage()` method
-- **State Management**: Auto-created root pages cached in state for reuse
-- **Configuration**: Added `NOTION_ROOT_TITLE` for customizing auto-created page titles
-- **Documentation**: Updated setup guides to reflect simplified configuration
-- **Benefits**: Eliminates manual root page setup requirement for new users
+### 2025-01-27: Notion Integration Root Page Requirements Research
+- **Research Corrected**: Internal Integration CANNOT create workspace parent pages via API
+- **Error Found**: `Internal integrations aren't owned by a single user, so creating workspace-level private pages is not supported`
+- **Requirement Confirmed**: `NOTION_ROOT_PAGE_ID` is REQUIRED for Internal Integration
+- **API Limitation**: Only Public Integration with `insert_content` capability can create workspace-level pages
+- **Configuration**: Reverted `NOTION_ROOT_PAGE_ID` to required field
+- **Documentation**: Updated to reflect correct API limitations
+
+**API Research Results:**
+- ❌ Internal Integration CANNOT create pages with `parent: { type: 'workspace', workspace: true }`
+- ❌ Internal Integration requires `parent.page_id` or `parent.database_id`
+- ✅ Only Public Integration can create workspace-level pages
+- ✅ Manual root page creation is required for Internal Integration
 
 **Key Changes:**
-- `lib/core/config.js`: Made `NOTION_ROOT_PAGE_ID` optional
-- `lib/core/notion/hierarchy-manager.js`: Added auto root page creation methods
-- `lib/core/notion/notion-state.js`: Added metadata storage for auto-created pages
-- `lib/core/notion/notion-sync.js`: Updated to use auto root page creation
-- `env.example`: Updated to show optional configuration
-- `docs/features/notion/`: Updated all documentation files
+- `lib/core/config.js`: Reverted `NOTION_ROOT_PAGE_ID` to required field
+- `lib/core/notion/notion-sync.js`: Reverted to use regular hierarchy creation
+- `env.example`: Updated to show required configuration
+- Error handling: Added clear error message for missing root page ID
 
 **Usage:**
 ```bash
-# Minimal configuration - only API token required
+# Required configuration for Internal Integration
 NOTION_API_TOKEN=secret_your-token
-
-# Optional customization
-NOTION_ROOT_TITLE=My Project Documentation
+NOTION_ROOT_PAGE_ID=your-manually-created-page-id
 ```
 
 ## 🚀 Notion Integration Implementation ✅ **PHASE 1 COMPLETE**
