@@ -199,6 +199,30 @@ node bin/docflu.js sync --file docs/test-internal-links.md
 - **Native Image Insertion**: Direct Google Docs API image insertion with unique placeholder system
 - **Unique Placeholder System**: Resolved duplicate placeholder conflicts with separate naming
 
+### 9. Notion Hierarchy Validation Enhancement ✅ **COMPLETED & TESTED**
+- **Issue**: Notion sync fails when directory hierarchy pages are deleted manually
+- **Example**: `docs/tutorial-basics/create-a-page.md` fails if `tutorial-basics` page was deleted
+- **Solution**: Enhanced hierarchy validation with automatic recreation of deleted pages
+- **Implementation**: 
+  - `createPageHierarchy()` now validates existing hierarchy pages before using them
+  - Added `validateHierarchyForFile()` method to pre-validate hierarchy before sync
+  - Enhanced `validateHierarchy()` with auto-recreation option and detailed statistics
+  - Added `recreateHierarchyPage()` method to rebuild deleted hierarchy pages
+  - `getOrCreateContentPage()` with hierarchy recreation support from ROOT_PAGE_ID
+  - `clearHierarchyForFile()` method to clean up problematic hierarchy state
+- **Features**:
+  - Automatic detection of deleted/archived hierarchy pages during sync
+  - Smart recreation of deleted pages with proper parent-child relationships
+  - Preservation of _category_.json metadata during recreation
+  - Detailed logging of validation and recreation process
+  - State cleanup for orphaned hierarchy references
+  - Fallback to ROOT_PAGE_ID when parent pages are problematic
+- **Test Results**: ✅ Successfully tested with archived `tutorial-basics` page
+  - Detected archived hierarchy page automatically
+  - Recreated parent page with proper structure
+  - Created content page successfully
+  - Updated state with new page IDs
+
 ### 9. Notion Sync Page Replacement Strategy ✅ **LATEST UPDATE**
 - **Issue**: `--docs` and `--dir` were using block-by-block clearing while `--file` archived entire pages
 - **Solution**: Unified all sync modes to use page archival and replacement strategy
