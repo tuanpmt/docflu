@@ -199,7 +199,28 @@ node bin/docflu.js sync --file docs/test-internal-links.md
 - **Native Image Insertion**: Direct Google Docs API image insertion with unique placeholder system
 - **Unique Placeholder System**: Resolved duplicate placeholder conflicts with separate naming
 
-### 9. Graphviz SVG Content Cropping Fix ✅ **ENHANCED FIX**
+### 9. Enhanced Markdown Formatting Support ✅ **LATEST FIXES**
+- **Issue**: Triple asterisk `***bold and italic***` and triple underscore `___bold and italic___` not parsed correctly
+- **Google Docs Fix**: Enhanced `detectInlineFormatting()` in `google-docs-converter.js`
+  - Added support for `***text***` and `___text___` patterns (bold + italic)
+  - Updated regex patterns with proper precedence handling
+  - Added conflict detection to prevent overlapping format matches
+- **Notion Fix**: Enhanced `parseRichText()` in `markdown-to-blocks.js`
+  - Added support for all underscore variants: `_italic_`, `__bold__`, `___bold and italic___`
+  - Updated bold regex to handle both `**bold**` and `__bold__` patterns
+  - Updated italic regex to handle both `*italic*` and `_italic_` patterns
+  - Added proper conflict detection for nested formatting patterns
+- **Test Coverage**: Added comprehensive test suites for both Google Docs and Notion converters
+  - Google Docs: 11/11 tests passing (including mixed formatting scenarios)
+  - Notion: 5/5 tests passing (including all underscore and asterisk combinations)
+- **Pattern Support**: Now supports all standard Markdown formatting:
+  - `**bold**` and `__bold__` → Bold
+  - `*italic*` and `_italic_` → Italic  
+  - `***bold italic***` and `___bold italic___` → Bold + Italic
+  - `~~strikethrough~~` → Strikethrough
+  - `` `code` `` → Inline code
+
+### 10. Graphviz SVG Content Cropping Fix ✅ **ENHANCED FIX**
 - **Problem**: Graphviz diagrams generated for Notion were cropped, missing content at edges
 - **Root Cause**: Insufficient margin (0.3pt) and lack of SVG optimization for Notion display
 - **Enhanced Solution**: 
@@ -236,7 +257,7 @@ node bin/docflu.js sync --file docs/test-internal-links.md
 - **Testing**: Comprehensive test suite with real Google Docs integration
 - **Usage**: `DEBUG_GDOCS_CONVERTER=true node ./bin/docflu.js sync --file path/to/file.md --gdocs`
 
-### 9. Notion File Upload API Integration ✅ **BREAKTHROUGH COMPLETE**
+### 11. Notion File Upload API Integration ✅ **BREAKTHROUGH COMPLETE**
 - **Feature**: Complete Notion File Upload API implementation for direct SVG upload to Notion workspace
 - **API Discovery**: Successfully discovered and implemented Notion's 3-step File Upload API workflow
 - **Direct Upload**: Eliminates need for external file hosting, uploads directly to Notion-managed storage
@@ -254,7 +275,7 @@ node bin/docflu.js sync --file docs/test-internal-links.md
 - **Testing Results**: 
   - ✅ **100% Success Rate**: All API calls working correctly
 
-### 10. Notion Hierarchy Documentation Update ✅ **DOCUMENTATION REFRESH COMPLETE**
+### 12. Notion Hierarchy Documentation Update ✅ **DOCUMENTATION REFRESH COMPLETE**
 - **Feature**: Comprehensive documentation update for Notion hierarchy management and integration features
 - **Enhanced Documentation**: Updated based on actual code implementation with latest features
 - **Key Updates**:
@@ -276,7 +297,7 @@ node bin/docflu.js sync --file docs/test-internal-links.md
   - ✅ **State Management**: Auto-created root page tracking with metadata persistence
   - ✅ **Validation System**: Hierarchy validation with orphaned reference cleanup
 
-### 10. Toggle/Details Feature Removal ✅ **COMPLETED**
+### 13. Toggle/Details Feature Removal ✅ **COMPLETED**
 - **Change**: Removed all toggle/details HTML processing mechanism from Notion markdown converter
 - **Reason**: Cleanup unused feature that was converting `<details><summary>` HTML to Notion toggle blocks
 - **Files Modified**:
