@@ -129,13 +129,13 @@ docflu sync --notion --docs
 - **🗑️ Fresh Pages**: Archives old page and creates completely new one
 - **⚡ Fast**: No content clearing, direct page replacement
 - **🔄 Always Updates**: Ignores file change detection
-- **📄 Flat Structure**: Creates page directly in root (no nested directories)
+- **🏗️ Nested Structure**: Creates directory-based page hierarchy (like `--docs`)
 - **🎯 Ideal For**: Individual file updates, testing, quick changes
 
 ### Docs Sync (`--docs`)  
 - **🏗️ Hierarchical**: Creates directory-based page structure with category support
 - **📈 Incremental**: Only syncs changed files for performance
-- **🧹 Content Update**: Clears and updates existing pages
+- **🗑️ Page Replacement**: Archives old pages and creates new ones (like `--file`)
 - **🔍 Change Detection**: Uses file hashes to detect changes
 - **📋 Category Integration**: Uses `_category_.json` for enhanced metadata
 - **🚫 Smart Skipping**: Automatically skips 'docs' directory to avoid nesting
@@ -154,14 +154,20 @@ docflu sync --notion --docs
     └── 📄 Configuration
 ```
 
-**Flat Mode** (`--file`):
+**Both `--docs` and `--file` now use Nested Mode**:
 ```
 📄 Documentation (root)
 ├── 📄 Intro
-├── 📄 Installation
-├── 📄 Quick Start
-└── 📄 Configuration
+├── 📁 Tutorial - Basics (from _category_.json)
+│   ├── 📄 Installation
+│   └── 📄 Quick Start
+└── 📁 Advanced Features (from _category_.json)
+    └── 📄 Configuration
 ```
+
+**Key Difference**:
+- `--docs`: Incremental sync (only changed files)
+- `--file`: Always syncs specified file (ignores change detection)
 
 ## Architecture
 

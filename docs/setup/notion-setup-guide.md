@@ -167,23 +167,31 @@ DocFlu offers two distinct sync modes with different behaviors:
 **Use Case**: Quick updates, testing, or syncing specific files
 
 ```bash
-# Sync single file - always creates fresh page
+# Sync single file - uses incremental sync like --docs
 docflu sync --notion --file docs/intro.md
 ```
 
 **Behavior**:
-- 🗑️ **Fresh Page Creation**: Archives old page and creates completely new one
-- ⚡ **Fast Performance**: No content clearing, direct page replacement
-- 🔄 **Always Updates**: Ignores file change detection (force sync)
-- 📄 **Flat Structure**: Creates page directly in root (no hierarchy)
+- 🔄 **Always Syncs**: Always processes the file (never skips)
+- 🗑️ **Replace Mode**: Archives old page and creates new one (like Confluence)
+- 🏗️ **Nested Structure**: Creates directory-based page hierarchy (like `--docs`)
+- 🔗 **State Cleanup**: Removes old page from state and creates fresh entry
 
 **Output Example**:
 ```
-🔄 Force syncing: docs/intro.md
-🗑️ Deleting old page from Notion...
-✓ Old page archived successfully
-📄 Creating content page: Tutorial Intro
-✓ Created: Tutorial Intro (43 blocks)
+🔄 Single file sync, updating existing page: tutorial-basics/create-a-page.md
+🗑️ Archived old page to replace with new one: tutorial-basics/create-a-page.md
+📁 Creating parent page: Tutorial Basics (tutorial-basics)
+📄 Creating content page: Create A Page
+✓ Replaced: Create A Page (43 blocks)
+```
+
+**For New Files**:
+```
+🔄 Single file sync, creating new page: tutorial-basics/create-a-page.md
+📁 Creating parent page: Tutorial Basics (tutorial-basics)
+📄 Creating content page: Create A Page
+✓ Created: Create A Page (43 blocks)
 ```
 
 ### 5.2 Docs Sync (`--docs`)
@@ -198,27 +206,53 @@ docflu sync --notion --docs
 **Behavior**:
 - 🏗️ **Hierarchical Structure**: Creates directory-based page structure
 - 📈 **Incremental Sync**: Only syncs changed files for performance
-- 🧹 **Content Update**: Clears and updates existing pages
+- 🗑️ **Replace Mode**: Archives old pages and creates new ones (like `--file`)
 - 🔍 **Change Detection**: Uses file hashes to detect changes
 
 **Output Example**:
 ```
 📁 Found 15 markdown files
 🔄 Syncing 3 files (12 skipped)
+🗑️ Docs sync: Archived old page to replace with new one: create-a-page.md
 📁 Creating parent page: Tutorial Basics
 📄 Creating content page: Create A Page
-✓ Updated: Create A Page (25 blocks)
+✓ Replaced: Create A Page (25 blocks)
 ```
 
-### 5.3 Choosing the Right Mode
+### 5.3 Force Sync Option
+
+Both `--file` and `--docs` support the `--force` option to bypass incremental sync:
+
+```bash
+# Force sync single file (always creates fresh page)
+docflu sync --notion --file docs/intro.md --force
+
+# Force sync all docs (ignores change detection)
+docflu sync --notion --docs --force
+```
+
+**When to Use `--force`**:
+- 🔄 **After major changes**: When you want to ensure complete refresh
+- 🐛 **Debugging issues**: When incremental sync isn't working correctly
+- 📄 **Page corruption**: When existing pages have formatting issues
+- 🧹 **Clean slate**: When you want to start fresh
+
+**Force Sync Behavior**:
+- Archives old page and creates completely new one
+- Ignores file change detection (always syncs)
+- Generates new page IDs (breaks external links)
+- Slower performance but guaranteed fresh content
+
+### 5.4 Choosing the Right Mode
 
 | Scenario | Recommended Mode | Reason |
 |----------|------------------|---------|
-| Testing changes | `--file` | Fast, no hierarchy needed |
-| Quick fixes | `--file` | Immediate fresh page |
-| Full site sync | `--docs` | Hierarchy + incremental |
+| Testing changes | `--file` | Always syncs, replaces old page with hierarchy |
+| Quick fixes | `--file` | Always syncs, fresh page creation with hierarchy |
+| Full site sync | `--docs` | Hierarchy + incremental + page replacement |
 | Initial setup | `--docs` | Complete structure |
-| Daily updates | `--docs` | Only changed files |
+| Daily updates | `--docs` | Only changed files, clean page replacement |
+| Force refresh | `--force` | Guaranteed fresh content |
 
 ## Step 6: Full Sync
 

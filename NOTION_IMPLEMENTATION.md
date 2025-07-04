@@ -91,6 +91,7 @@ docflu/                        # CLI package
 - [x] **State Management**: Track page IDs, timestamps, hierarchy mappings with SHA256 hashing
 - [x] **Incremental Sync**: Only process changed files using hash-based comparison
 - [x] **Error Recovery**: Comprehensive error handling with fallback mechanisms
+- [x] **Unified Page Replacement**: All sync modes now use page archival and replacement strategy
 
 ## 🎯 PHASE 2: Advanced Content ✅ COMPLETED (12/12 Features)
 
@@ -165,6 +166,54 @@ docflu sync --notion --dry-run          # ✅ Preview changes without uploading
 # Setup command (IMPLEMENTED)
 docflu init --notion                    # ✅ Setup Notion integration
 ```
+
+## 🔄 Sync Behavior Update ✅ COMPLETED (Latest Enhancement)
+
+### Unified Page Replacement Strategy ✅ IMPLEMENTED
+Previously, different sync modes used different update strategies:
+- `--file`: Archived old page and created new one
+- `--docs` & `--dir`: Cleared content block-by-block and updated existing page
+
+**New Unified Behavior** (All sync modes now use same strategy):
+- **Archive Old Page**: Use `archived: true` API call to archive existing page
+- **Create Fresh Page**: Create completely new page with fresh content
+- **Update State**: Remove old page from state and track new page ID
+- **Better Performance**: Eliminates slow block-by-block deletion
+- **Consistent Experience**: All sync modes behave like Confluence replacement
+
+### Implementation Details ✅ COMPLETED
+```javascript
+// ✅ IMPLEMENTED: Unified page replacement logic
+if ((options.force || options.singleFile || hadExistingPage) && existingPageId) {
+  try {
+    // Archive old page
+    await this.client.updatePage(existingPageId, {
+      archived: true
+    });
+    
+    // Log appropriate message
+    if (options.singleFile) {
+      console.log('🗑️ Archived old page to replace with new one');
+    } else if (options.force) {
+      console.log('🗑️ Force sync: Archived old page');
+    } else {
+      console.log('🗑️ Docs sync: Archived old page to replace with new one');
+    }
+    
+    // Remove from state
+    this.state.removePage(filePath);
+  } catch (error) {
+    console.warn('⚠️ Could not archive old page:', error.message);
+  }
+}
+```
+
+### Benefits ✅ ACHIEVED
+- **Consistent Behavior**: All sync modes now work identically
+- **Better Performance**: No slow block-by-block clearing
+- **Cleaner Results**: Fresh pages without content conflicts
+- **Confluence-like Experience**: Matches user expectations from Confluence sync
+- **Error Reduction**: Eliminates block clearing edge cases
 
 ## 📋 Notion API Integration Details ✅ COMPLETED
 

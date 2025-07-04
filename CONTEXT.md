@@ -199,7 +199,22 @@ node bin/docflu.js sync --file docs/test-internal-links.md
 - **Native Image Insertion**: Direct Google Docs API image insertion with unique placeholder system
 - **Unique Placeholder System**: Resolved duplicate placeholder conflicts with separate naming
 
-### 9. Enhanced Markdown Formatting Support ✅ **LATEST FIXES**
+### 9. Notion Sync Page Replacement Strategy ✅ **LATEST UPDATE**
+- **Issue**: `--docs` and `--dir` were using block-by-block clearing while `--file` archived entire pages
+- **Solution**: Unified all sync modes to use page archival and replacement strategy
+- **Implementation**: Modified `processFile()` to archive old pages for all sync modes (not just `--file`)
+- **Benefits**: 
+  - Consistent behavior across all sync modes
+  - Cleaner page replacement (like Confluence behavior)
+  - Eliminates potential block clearing issues
+  - Better performance by avoiding individual block deletion
+- **Behavior Change**: 
+  - `--file`: Archives old page → Creates new page (unchanged)
+  - `--docs`: Archives old page → Creates new page (changed from block clearing)
+  - `--dir`: Archives old page → Creates new page (changed from block clearing)
+- **Log Messages**: Updated to show "REPLACED" instead of "UPDATED" for existing pages
+
+### 10. Enhanced Markdown Formatting Support ✅ **LATEST FIXES**
 - **Issue**: Triple asterisk `***bold and italic***` and triple underscore `___bold and italic___` not parsed correctly
 - **Google Docs Fix**: Enhanced `detectInlineFormatting()` in `google-docs-converter.js`
   - Added support for `***text***` and `___text___` patterns (bold + italic)
