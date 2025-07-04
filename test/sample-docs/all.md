@@ -14,6 +14,7 @@ This document demonstrates all supported markdown elements in Docusaurus.
 - [Images](#images)
 - [File Attachments](#file-attachments)
 - [Diagrams and Mermaid](#diagrams-and-mermaid)
+
 - [Advanced Features](#advanced-features)
 
 ---
@@ -307,6 +308,43 @@ graph TD
     style G fill:#9f9,stroke:#333,stroke-width:2px
 ```
 
+### Mermaid Class Diagram
+
+```mermaid
+classDiagram
+    class User {
+        +String name
+        +String email
+        +Date createdAt
+        +login()
+        +logout()
+        +updateProfile()
+    }
+    
+    class Post {
+        +String title
+        +String content
+        +Date publishedAt
+        +User author
+        +publish()
+        +edit()
+        +delete()
+    }
+    
+    class Comment {
+        +String content
+        +Date createdAt
+        +User author
+        +Post post
+        +reply()
+        +edit()
+    }
+
+    User "1" --> "*" Post : creates
+    User "1" --> "*" Comment : writes  
+    Post "1" --> "*" Comment : has
+```
+
 
 ### Mermaid Entity Relationship Diagram
 
@@ -485,6 +523,89 @@ browser: {
 }
 ```
 
+### Front Matter
+
+```yaml
+---
+id: my-doc-id
+title: My document title
+description: My document description
+slug: /my-custom-url
+sidebar_label: Custom Label
+sidebar_position: 3
+hide_title: false
+hide_table_of_contents: false
+pagination_label: Custom pagination
+keywords: [docusaurus, markdown, features]
+---
+```
+
+### Code Block Features
+
+#### With Title
+
+```javascript title="src/components/HelloWorld.js"
+function HelloWorld() {
+  return <h1>Hello, World!</h1>;
+}
+```
+
+#### With Line Numbers
+
+```jsx {1,4-6,11} showLineNumbers
+import React from 'react';
+
+function ButtonExample() {
+  const handleClick = () => {
+    alert('Button clicked!');
+  };
+
+  return (
+    <div>
+      <h1>My Component</h1>
+      <button onClick={handleClick}>
+        Click me!
+      </button>
+    </div>
+  );
+}
+```
+
+#### Multiple Language Examples
+
+**JavaScript:**
+```js
+function helloWorld() {
+  console.log('Hello, world!');
+}
+```
+
+**Python:**
+```py
+def hello_world():
+    print("Hello, world!")
+```
+
+**Java:**
+```java
+public class HelloWorld {
+    public static void main(String[] args) {
+        System.out.println("Hello, world!");
+    }
+}
+```
+
+### Document Metadata
+
+```markdown
+---
+title: Page Title
+description: Page description for SEO
+keywords: [keyword1, keyword2, keyword3]
+image: /img/custom-social-card.jpg
+---
+```
+
 ---
 
 ## Advanced Features
@@ -536,16 +657,7 @@ This content is hidden by default and can be toggled.
 
 🚀 💻 📚 🔧 ⚡ 🎯 📈 🌟
 
-### Math Expressions
 
-Math expressions require additional plugin configuration in Docusaurus.
-
-Example inline math: `E = mc²`
-
-Example block math:
-```
-∫_{-∞}^{∞} e^{-x²} dx = √π
-```
 
 ---
 

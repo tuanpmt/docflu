@@ -130,17 +130,23 @@ uploadedAttachments: {
 
 ### Link Processing Workflow
 
-#### Phase 1: Detection, Deduplication and Placeholder Creation
+#### Phase 1: Detection and Placeholder Creation
 ```javascript
-// Multiple references to same file:
+// Each link gets unique placeholder (no grouping by text to avoid conflicts):
 // [Download Config](/files/config.json) → [[[LINK_0]]]
-// [`config.json`](/files/config.json) → [[[LINK_0]]] (same placeholder)
+// [`config.json`](/files/config.json) → [[[LINK_1]]]
+// [themeConfig](/files/config.json) → [[[LINK_2]]]
 
-// Deduplication logic:
-const linkKey = `${link.text}|${normalizedUrl}`;
-if (!textToLinkGroup.has(linkKey)) {
+// Unique placeholder logic:
+for (const linkRequest of sortedRequests) {
   const placeholder = `[[[LINK_${placeholderCounter}]]]`;
-  // Group all occurrences under same placeholder
+  linkRequestMap.set(placeholder, {
+    text: link.text,
+    url: finalUrl,
+    placeholder: placeholder,
+    // ... other properties
+  });
+  placeholderCounter++;
 }
 ```
 
@@ -149,45 +155,78 @@ if (!textToLinkGroup.has(linkKey)) {
 const uploadResult = await this.attachmentProcessor.uploadAttachment(link.absolutePath);
 ```
 
-#### Phase 3: 2-Phase Google Docs Integration
+#### Phase 3: Combined Google Docs Integration (Single-Phase)
 
-**Phase 3.1: Text Replacement**
+**Enhanced Approach: Exact Placeholder Positioning**
 ```javascript
-// Replace all placeholders with text using replaceAllText API
-{
-  replaceAllText: {
-    containsText: {
-      text: "[[[LINK_0]]]",
-      matchCase: true
-    },
-    replaceText: "Download Config"
+// Find exact position of each placeholder before processing
+const positions = this.findAllTextOccurrences(placeholder, textElements);
+const position = positions[0]; // Exact placeholder position
+
+// Combined operation: delete placeholder + insert text + apply formatting
+const requests = [
+  // 1. Delete the placeholder
+  {
+    deleteContentRange: {
+      range: {
+        startIndex: position.startIndex,
+        endIndex: position.endIndex
+      }
+    }
+  },
+  // 2. Insert replacement text
+  {
+    insertText: {
+      location: { index: position.startIndex },
+      text: replacementText
+    }
+  },
+  // 3. Apply link formatting to inserted text
+  {
+    updateTextStyle: {
+      textStyle: {
+        link: { url: linkRequest.url },
+        foregroundColor: { color: { rgbColor: { blue: 1.0, green: 0.0, red: 0.0 } } },
+        underline: true
+      },
+      range: {
+        startIndex: position.startIndex,
+        endIndex: position.startIndex + replacementText.length
+      },
+      fields: "link,foregroundColor,underline"
+    }
   }
-}
+];
 ```
 
-**Phase 3.2: Link Formatting**
+#### Key Improvements: Duplicate Text Handling
 ```javascript
-// Apply link formatting after text is replaced
-{
-  updateTextStyle: {
-    textStyle: {
-      link: { url: linkRequest.url },
-      foregroundColor: { color: { rgbColor: { blue: 1.0, green: 0.0, red: 0.0 } } },
-      underline: true
-    },
-    range: { startIndex: position.startIndex, endIndex: position.endIndex },
-    fields: "link,foregroundColor,underline"
-  }
-}
+// OLD PROBLEM: Multiple "themeConfig" text in document
+// - themeConfig at position X (correct link)
+// - themeConfig at position Y (wrong position gets formatting)
+
+// NEW SOLUTION: Exact placeholder positioning
+// 1. Find exact position of [[[LINK_N]]] placeholder
+// 2. Replace only that specific placeholder
+// 3. Apply formatting to exact replacement position
+// 4. No text search conflicts with existing content
 ```
 
 #### Advanced Safety Features
 ```javascript
-// Text verification prevents corruption
-const actualText = processedMarkdown.substring(startIndex, endIndex);
-if (actualText !== originalText) {
-  console.warn(`Text mismatch: expected "${originalText}", found "${actualText}"`);
-  continue; // Skip this replacement to avoid corruption
+// Reverse order processing prevents index shifting
+const sortedRequests = [...linkRequests].sort((a, b) => {
+  const posA = placeholderPositions.get(a.placeholder);
+  const posB = placeholderPositions.get(b.placeholder);
+  return posB.startIndex - posA.startIndex; // Reverse order
+});
+
+// Position verification before processing
+if (positions.length > 0) {
+  const position = positions[0];
+  console.log(`Found placeholder "${placeholder}" at position ${position.startIndex}-${position.endIndex}`);
+} else {
+  console.warn(`Could not find placeholder: ${placeholder}`);
 }
 ```
 
@@ -251,10 +290,10 @@ await this.stateManager.updateState({
 ## Performance Optimizations
 
 ### Batch Processing
-- **2-Phase Approach**: Separates text replacement and formatting for reliability
-- **replaceAllText API**: Avoids complex index calculations and prevents content loss
-- **Deduplication**: Reduces duplicate processing for same files with multiple references
-- Single batch update for all formatting operations
+- **Single-Phase Approach**: Combines placeholder deletion, text insertion, and formatting in one batch
+- **Exact Positioning**: Eliminates text search conflicts by using precise placeholder positions
+- **Reverse Processing**: Processes placeholders in reverse order to prevent index shifting
+- **Reduced API Calls**: Single batch update for all link operations (3 requests per link)
 
 ### Caching
 - File hash-based deduplication
@@ -262,9 +301,9 @@ await this.stateManager.updateState({
 - Persistent cache across sync sessions
 
 ### Error Recovery
-- **Text Verification**: Prevents corruption by verifying text before replacement
-- **Graceful Skipping**: Skips problematic replacements instead of failing entire batch
-- Fallback to text format on formatting failures
+- **Position Verification**: Verifies placeholder existence before processing
+- **Graceful Skipping**: Skips missing placeholders instead of failing entire batch
+- **Index Safety**: Reverse order processing prevents index corruption
 - Comprehensive error logging with detailed context
 
 ## Statistics and Monitoring
@@ -276,8 +315,7 @@ await this.stateManager.updateState({
   attachmentsFound: 3,
   attachmentsUploaded: 2,
   attachmentsCached: 1,
-  duplicateReferences: 4,  // Multiple references to same files
-  uniqueLinkRequests: 6,   // After deduplication
+  uniqueLinkRequests: 8,   // Each link gets unique placeholder
   errors: []
 }
 ```
@@ -286,10 +324,9 @@ await this.stateManager.updateState({
 ```
 🔗 Processing links and attachments...
 📎 Uploading attachment: ./docs/manual.pdf
-🔄 Found 10 total links, deduplicated to 6 unique requests
-📝 Phase 1: 6/6 text replacements successful
-🔗 Phase 2: 6/6 link formatting successful
-✅ Link processing complete: 2 external links, 4 attachments (2 uploaded, 2 cached)
+🔄 Found 8 links, creating 8 unique placeholders
+📝 Phase 1: Found 8/8 placeholders, created 24 combined requests
+✅ Link processing complete: 2 external links, 6 attachments (2 uploaded, 4 cached)
 ```
 
 ## Usage Examples
@@ -326,16 +363,23 @@ See the [API Reference](https://api.example.com/docs) for integration details.
    - Check network connectivity
    - Review file size limits
 
-3. **Text Corruption or Missing Content**
-   - **Cause**: Multiple references to same file creating overlapping replacements
-   - **Solution**: System now uses 2-phase processing with deduplication
-   - **Debug**: Check for "Text mismatch" warnings in logs
+3. **Link Formatting Applied to Wrong Position** ✅ **FIXED**
+   - **Old Issue**: When document contains multiple instances of same text (e.g., "themeConfig"), link formatting could be applied to wrong occurrence
+   - **Root Cause**: System searched for text after replacement instead of using exact placeholder positions
+   - **Solution**: Enhanced to use exact placeholder positioning with combined operations
+   - **Result**: Each link now formatted at its exact placeholder position, eliminating text conflicts
 
 4. **Link Formatting Issues**
    - Enable debug mode for detailed logs
-   - Check placeholder generation and replacement
+   - Check placeholder generation and positioning
    - Verify Google Docs API permissions
-   - Review Phase 1 (text replacement) and Phase 2 (formatting) logs separately
+   - Review combined operation logs (delete + insert + format)
+
+5. **Missing Placeholders**
+   - **Symptom**: Warning "Could not find placeholder: [[[LINK_N]]]"
+   - **Cause**: Placeholder was not properly inserted or was corrupted
+   - **Debug**: Check Phase 1 placeholder insertion logs
+   - **Solution**: Verify markdown link syntax and file paths
 
 ### Debug Commands
 ```bash
@@ -346,12 +390,20 @@ DEBUG_GDOCS_CONVERTER=true node ./bin/docflu.js sync --file docs/example.md --gd
 cat .docusaurus/debug/gdocs-link-processor/link-processing-*.json
 ```
 
+### Debug Output Analysis
+```
+🐛 Found placeholder "[[[LINK_0]]]" at position 123-135
+🐛 Will replace with "config.json" and format as link to https://drive.google.com/...
+🔗 Link formatting: "config.json" → https://drive.google.com/... (123-134)
+```
+
 ## Future Enhancements
 
 ### Planned Features
-- [x] **2-Phase Link Processing** - Completed: Separates text replacement and formatting
-- [x] **Multiple File References** - Completed: Supports different text references to same file
-- [x] **Advanced Deduplication** - Completed: Groups links by text+URL to prevent conflicts
+- [x] **Single-Phase Link Processing** - Completed: Combines deletion, insertion, and formatting in one batch
+- [x] **Exact Placeholder Positioning** - Completed: Eliminates duplicate text conflicts
+- [x] **Unique Placeholders** - Completed: Each link gets unique placeholder to prevent conflicts
+- [x] **Duplicate Text Handling** - Completed: Fixed issues with multiple instances of same text
 - [ ] Link validation and health checking
 - [ ] Automatic link text extraction from target pages
 - [ ] Support for internal document cross-references
