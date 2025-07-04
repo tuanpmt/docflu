@@ -1,7 +1,7 @@
 {
   "name": "docflu",
   "version": "1.0.3",
-  "description": "CLI tool to sync Docusaurus documentation to Confluence with hierarchy, internal links, and Mermaid diagram support",
+  "description": "CLI tool to sync Docusaurus documentation to Confluence, Google Docs, and Notion with hierarchy, internal links, and diagram support",
   "main": "bin/docflu.js",
   "bin": {
     "docflu": "./bin/docflu.js"
@@ -23,6 +23,7 @@
     "test:all": "npm run test && npm run test:hierarchy && npm run test:mermaid && npm run test:references && npm run test:migration && npm run test:init && npm run test:diagram-comprehensive && npm run test:google-docs && npm run test:gdocs"
   },
   "dependencies": {
+    "@notionhq/client": "^2.3.0",
     "axios": "^1.6.0",
     "chalk": "^4.1.2",
     "cheerio": "^1.1.0",
@@ -40,8 +41,8 @@
   },
   "optionalDependencies": {
     "@mermaid-js/mermaid-cli": "^10.6.1",
-    "sharp": "^0.33.5",
-    "plantuml-encoder": "^1.4.0"
+    "plantuml-encoder": "^1.4.0",
+    "sharp": "^0.33.5"
   },
   "engines": {
     "node": ">=16.0.0"
@@ -56,6 +57,8 @@
   "keywords": [
     "docusaurus",
     "confluence",
+    "google-docs",
+    "notion",
     "markdown",
     "sync",
     "cli",

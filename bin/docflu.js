@@ -3,8 +3,9 @@
 const { Command } = require('commander');
 const chalk = require('chalk');
 const path = require('path');
-const { syncFile, syncDocs, syncBlog } = require('../lib/commands/sync');
+const { syncFile, syncDocs, syncBlog, syncDir } = require('../lib/commands/sync');
 const { syncGoogleDocs } = require('../lib/commands/sync_gdocs');
+const syncNotion = require('../lib/commands/sync_notion');
 const { initProject } = require('../lib/commands/init');
 
 const program = new Command();
@@ -14,18 +15,21 @@ const packageJson = require('../package.json');
 
 program
   .name('docflu')
-  .description('CLI tool to sync Docusaurus documentation to Confluence and Google Docs with hierarchy, internal links, and diagram support')
+  .description('CLI tool to sync Docusaurus documentation to Confluence, Google Docs, and Notion with hierarchy, internal links, and diagram support')
   .version(packageJson.version);
 
 program
   .command('sync [projectPath]')
-  .description('Sync markdown content to Confluence or Google Docs')
+  .description('Sync markdown content to Confluence, Google Docs, or Notion')
   .option('-f, --file <path>', 'specific file to sync')
   .option('--docs', 'sync all documents in docs/ directory')
   .option('--blog', 'sync all blog posts in blog/ directory')
+  .option('--dir <path>', 'sync specific directory with hierarchy')
   .option('--gdocs', 'sync to Google Docs (requires OAuth2 authentication)')
+  .option('--notion', 'sync to Notion (requires API token)')
   .option('--conflu', 'sync to Confluence (default)')
   .option('--dry-run', 'preview changes without syncing')
+  .option('--force', 'force sync all files (ignore incremental sync)')
   .action(async (projectPath, options) => {
     try {
       let projectRoot;
@@ -67,11 +71,21 @@ program
       }
 
       // Determine platform - default to Confluence for backward compatibility
-      const platform = options.gdocs ? 'google-docs' : 'confluence';
+      let platform = 'confluence';
+      if (options.gdocs) platform = 'google-docs';
+      if (options.notion) platform = 'notion';
       
+      // Validate sync mode options
+      const syncModes = [options.file, options.docs, options.blog, options.dir].filter(Boolean);
+      if (syncModes.length > 1) {
+        console.log(chalk.red('❌ Cannot specify multiple sync modes. Choose one: --file, --docs, --blog, or --dir.'));
+        process.exit(1);
+      }
+
       // Validate platform options
-      if (options.gdocs && options.conflu) {
-        console.log(chalk.red('❌ Cannot specify both --gdocs and --conflu. Choose one platform.'));
+      const platformOptions = [options.gdocs, options.notion, options.conflu].filter(Boolean);
+      if (platformOptions.length > 1) {
+        console.log(chalk.red('❌ Cannot specify multiple platforms. Choose one: --gdocs, --notion, or --conflu.'));
         process.exit(1);
       }
 
@@ -81,6 +95,8 @@ program
         
         if (platform === 'google-docs') {
           await syncGoogleDocs('file', filePath, options.dryRun, projectRoot);
+        } else if (platform === 'notion') {
+          await syncNotion(projectRoot, { file: filePath, dryRun: options.dryRun, force: options.force });
         } else {
           await syncFile(filePath, options.dryRun, projectRoot);
         }
@@ -93,6 +109,8 @@ program
         
         if (platform === 'google-docs') {
           await syncGoogleDocs('docs', null, options.dryRun, projectRoot);
+        } else if (platform === 'notion') {
+          await syncNotion(projectRoot, { docs: true, dryRun: options.dryRun, force: options.force });
         } else {
           await syncDocs(options.dryRun, projectRoot);
         }
@@ -105,22 +123,42 @@ program
         
         if (platform === 'google-docs') {
           await syncGoogleDocs('blog', null, options.dryRun, projectRoot);
+        } else if (platform === 'notion') {
+          await syncNotion(projectRoot, { blog: true, dryRun: options.dryRun, force: options.force });
         } else {
           await syncBlog(options.dryRun, projectRoot);
         }
         
         // Ensure process exits cleanly
         process.exit(0);
+      } else if (options.dir) {
+        console.log(chalk.blue(`🚀 Syncing directory to ${platform}: ${options.dir}`));
+        console.log(chalk.gray('📂 Project root:', projectRoot));
+        
+        if (platform === 'google-docs') {
+          await syncGoogleDocs('dir', options.dir, options.dryRun, projectRoot);
+        } else if (platform === 'notion') {
+          await syncNotion(projectRoot, { dir: options.dir, dryRun: options.dryRun, force: options.force });
+        } else {
+          await syncDir(options.dir, options.dryRun, projectRoot);
+        }
+        
+        // Ensure process exits cleanly
+        process.exit(0);
       } else {
-        console.log(chalk.red('❌ Please specify --file, --docs, or --blog option'));
+        console.log(chalk.red('❌ Please specify --file, --docs, --blog, or --dir option'));
         console.log('Examples:');
         console.log('  docflu sync --file docs/intro.md');
         console.log('  docflu sync --docs');
         console.log('  docflu sync --blog');
+        console.log('  docflu sync --dir docs/tutorial-basics');
         console.log('  docflu sync --gdocs --docs  # Sync to Google Docs');
+        console.log('  docflu sync --notion --docs  # Sync to Notion');
         console.log('  docflu sync --conflu --docs  # Sync to Confluence');
         console.log('  docflu sync ../docusaurus-exam --docs');
         console.log('  docflu sync /path/to/project --gdocs --blog');
+        console.log('  docflu sync /path/to/project --notion --docs');
+        console.log('  docflu sync /path/to/project --gdocs --dir docs/tutorial');
         process.exit(1);
       }
     } catch (error) {
