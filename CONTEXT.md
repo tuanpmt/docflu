@@ -347,13 +347,50 @@ node bin/docflu.js sync --file docs/test-internal-links.md
   - ✅ **Performance**: 2-3 seconds for small SVG uploads
   - ✅ **Cache Efficiency**: Instant response for duplicate content
   - ✅ **File Lifecycle**: Proper handling of pending → uploaded → attached states
-- **API Specification**: Following official Notion documentation exactly
-  - **Endpoint**: `https://api.notion.com/v1/file_uploads`
-  - **Authentication**: `Bearer token` with `Notion-Version: 2022-06-28`
-  - **File Expiry**: 1-hour attachment deadline, permanent after attachment
-  - **Reusability**: Same file upload ID can be reused multiple times
-- **Integration**: Ready for integration with Notion diagram processors for SVG upload
-- **Usage**: `const fileUploader = new NotionFileUploader(notionClient, apiToken)`
+
+### 14. Google Docs Duplicate Link Formatting Fix ✅ **CRITICAL FIX**
+- **Issue**: Link formatting applied to wrong positions when document contains multiple instances of same text
+- **Example**: When document has `themeConfig` text in multiple places, link formatting applied to wrong occurrence
+- **Root Cause**: Logic used `findAllTextOccurrences()` and applied formatting to first match found, not actual placeholder position
+- **Solution**: Enhanced link processing to use exact placeholder positioning with combined operations
+- **Implementation**:
+  - **Exact Placeholder Detection**: Find exact position of each `[[[LINK_N]]]` placeholder before processing
+  - **Combined Operations**: Combine delete placeholder + insert text + apply formatting in single batch
+  - **Reverse Processing**: Process placeholders in reverse order to maintain text indices
+  - **Simplified Logic**: Eliminated separate Phase 2 since formatting is done in Phase 1
+- **Key Changes**:
+  - `createLinkFormattingRequests()` now handles both replacement and formatting
+  - `applyLinkFormattingAfterReplacement()` becomes no-op since work is done in Phase 1
+  - Three requests per link: `deleteContentRange` → `insertText` → `updateTextStyle`
+  - Reverse order processing prevents index shifting issues
+- **Benefits**:
+  - **Exact Positioning**: Each link formatted at its exact placeholder position
+  - **No Text Conflicts**: Eliminates issues with duplicate text content in document
+  - **Better Performance**: Fewer API calls and document reads
+  - **Simplified Logic**: Single-phase processing reduces complexity
+- **Testing**: Verified with documents containing multiple links with identical text content
+- **Result**: All links now formatted at correct positions regardless of duplicate text elsewhere
+
+### 10. Google Docs Link Formatting Enhancement ✅ **LATEST FIX**
+- **Issue**: File attachment links with backticks in text lose formatting when synced to Google Docs
+- **Example**: `Configuration: [\`config.json\`](/files/config.json)` becomes plain text instead of formatted link
+- **Root Cause**: Link processor replaced entire link with placeholder but didn't preserve inline formatting (backticks, bold, italic)
+- **Solution**: Enhanced link processor to detect and preserve inline formatting in link text
+- **Implementation**:
+  - Added `detectLinkTextFormatting()` method to analyze link text for backticks, bold, italic formatting
+  - Enhanced `generateLinkRequests()` to store formatting information with each link request
+  - Updated `createLinkFormattingRequests()` to use clean text (without markers) for replacement
+  - Added `createInlineFormattingRequests()` to apply formatting after link creation
+  - Added `calculateOffsetMapping()` and `mapToCleanTextPosition()` for accurate position mapping
+- **Features**:
+  - **Backticks Support**: `[\`config.json\`](/files/config.json)` → link with code formatting
+  - **Bold Support**: `[**bold-file.pdf**](/files/bold-file.pdf)` → link with bold formatting
+  - **Italic Support**: `[*italic-file.pdf*](/files/italic-file.pdf)` → link with italic formatting
+  - **Bold+Italic Support**: `[***bold-italic-file.pdf***](/files/bold-italic-file.pdf)` → link with both formatting
+  - **Multiple References**: Same file with different text formatting supported
+  - **Clean Text Processing**: Removes formatting markers for text replacement, applies formatting separately
+- **Testing**: Comprehensive test suite with real file attachments and various formatting combinations
+- **Result**: All link text formatting now preserved correctly in Google Docs output
 
 ## 📁 Files Created and Content
 
@@ -904,7 +941,8 @@ docflu sync --notion --docs --dry-run
 ```bash
 # Required environment variables
 NOTION_API_TOKEN=secret_your-notion-integration-token
-NOTION_ROOT_PAGE_ID=your-root-page-id  # Manual page creation required
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
 ```
 
 ## Recent Enhancements
