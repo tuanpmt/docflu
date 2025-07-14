@@ -25,6 +25,7 @@ program
   .option('--docs', 'sync all documents in docs/ directory')
   .option('--blog', 'sync all blog posts in blog/ directory')
   .option('--dir <path>', 'sync specific directory with hierarchy')
+  .option('--target <pageUrlOrId>', 'target specific Confluence page (URL or ID)')
   .option('--gdocs', 'sync to Google Docs (requires OAuth2 authentication)')
   .option('--notion', 'sync to Notion (requires API token)')
   .option('--conflu', 'sync to Confluence (default)')
@@ -89,16 +90,32 @@ program
         process.exit(1);
       }
 
+      // Validate target option - only for Confluence and only with --file
+      if (options.target) {
+        if (platform !== 'confluence') {
+          console.log(chalk.red('❌ --target option is only supported for Confluence sync. Remove --gdocs or --notion flags.'));
+          process.exit(1);
+        }
+        if (!options.file) {
+          console.log(chalk.red('❌ --target option requires --file option. It cannot be used with --docs, --blog, or --dir.'));
+          process.exit(1);
+        }
+      }
+
       if (options.file) {
         console.log(chalk.blue(`🚀 Syncing single file to ${platform}:`, filePath));
         console.log(chalk.gray('📂 Project root:', projectRoot));
+        
+        if (options.target) {
+          console.log(chalk.cyan('🎯 Target page:', options.target));
+        }
         
         if (platform === 'google-docs') {
           await syncGoogleDocs('file', filePath, options.dryRun, projectRoot);
         } else if (platform === 'notion') {
           await syncNotion(projectRoot, { file: filePath, dryRun: options.dryRun, force: options.force });
         } else {
-          await syncFile(filePath, options.dryRun, projectRoot);
+          await syncFile(filePath, options.dryRun, projectRoot, options.target);
         }
         
         // Ensure process exits cleanly
@@ -149,6 +166,8 @@ program
         console.log(chalk.red('❌ Please specify --file, --docs, --blog, or --dir option'));
         console.log('Examples:');
         console.log('  docflu sync --file docs/intro.md');
+        console.log('  docflu sync --file docs/intro.md --target 123456  # Sync to specific page ID');
+        console.log('  docflu sync --file docs/intro.md --target "https://domain.atlassian.net/wiki/spaces/DOC/pages/123456/Page+Title"');
         console.log('  docflu sync --docs');
         console.log('  docflu sync --blog');
         console.log('  docflu sync --dir docs/tutorial-basics');
