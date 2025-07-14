@@ -1,6 +1,6 @@
 {
   "name": "docflu",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "CLI tool to sync Docusaurus documentation to Confluence, Google Docs, and Notion with hierarchy, internal links, and diagram support",
   "main": "bin/docflu.js",
   "bin": {
