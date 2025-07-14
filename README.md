@@ -5,20 +5,25 @@
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D16.0.0-brightgreen.svg)](https://nodejs.org/)
 
-docflu CLI automatically syncs your Docusaurus markdown documentation to Confluence pages, maintaining hierarchy, processing internal links, handling images, and converting diagrams to high-quality SVG images.
+docflu CLI automatically syncs your Docusaurus markdown documentation to multiple platforms (Confluence, Google Docs, and Notion), maintaining hierarchy, processing internal links, handling images, and converting diagrams to high-quality SVG images.
 
 > **🤖 AI-Powered Development**: Built in 5 hours using [Cursor](https://cursor.sh/) + [Claude 4 Sonnet](https://www.anthropic.com/claude)
 
 ## ✨ Features
 
-- **One-way sync** Docusaurus → Confluence
-- **Hierarchy preservation** - maintains folder structure
-- **Internal link processing** - converts relative links to Confluence URLs
+### 🎯 Multi-Platform Support
+- **Confluence sync** - Full-featured Confluence integration with hierarchy
+- **Google Docs sync** - OAuth2 authentication with document creation
+- **Notion sync** - Native block processing with file upload API
+- **Target page sync** - Sync directly to specific Confluence pages
+
+### 🔧 Core Features
+- **Hierarchy preservation** - maintains folder structure across all platforms
+- **Internal link processing** - converts relative links to platform-specific URLs
 - **Image handling** - uploads and processes images automatically
 - **Comprehensive diagram support** - Mermaid, PlantUML, Graphviz/DOT, D2 → SVG
 - **Auto CLI installation** - automatically installs required diagram tools
-- **High-quality output** - Optimized SVG generation for Confluence compatibility
-- **Enhanced diagram quality** - 100% Confluence compatibility with proper backgrounds
+- **High-quality output** - Optimized SVG generation for platform compatibility
 - **Incremental sync** - only syncs changed files
 - **Dry-run mode** - preview changes before applying
 - **State management** - tracks sync history in `.docusaurus/`
@@ -47,7 +52,7 @@ cd your-docusaurus-project
 # Initialize configuration
 docflu init
 
-# Edit .env with your Confluence credentials
+# Edit .env with your platform credentials
 ```
 
 ### First Sync
@@ -56,8 +61,15 @@ docflu init
 # Preview changes
 docflu sync --docs --dry-run
 
-# Sync all documentation
-docflu sync --docs
+# Sync to different platforms
+docflu sync --docs                    # Confluence (default)
+docflu sync --docs --gdocs            # Google Docs
+docflu sync --docs --notion           # Notion
+
+# Advanced usage examples
+docflu sync --file docs/intro.md --target 123456     # Target specific page
+docflu sync /path/to/project --docs --gdocs          # Cross-project sync
+docflu sync --dir docs/advanced --dry-run            # Directory sync preview
 ```
 
 ## 📖 Usage
@@ -69,16 +81,29 @@ docflu sync --docs
 | `docflu init` | Setup .env configuration |
 | `docflu sync --docs` | Sync all documentation |
 | `docflu sync --file <path>` | Sync specific file |
+| `docflu sync --file <path> --target <id>` | Sync to specific Confluence page |
+| `docflu sync --docs --gdocs` | Sync to Google Docs |
+| `docflu sync --docs --notion` | Sync to Notion |
 | `docflu sync --dry-run` | Preview without changes |
 
 ### Configuration (.env)
 
 ```env
+# Confluence Configuration
 CONFLUENCE_BASE_URL=https://your-domain.atlassian.net
 CONFLUENCE_USERNAME=your-email@domain.com
 CONFLUENCE_API_TOKEN=your-api-token
 CONFLUENCE_SPACE_KEY=DOC
 CONFLUENCE_ROOT_PAGE_TITLE=Documentation
+
+# Google Docs Configuration
+GOOGLE_CLIENT_ID=your-oauth2-client-id.googleusercontent.com
+GOOGLE_CLIENT_SECRET=GOCSPX-your-client-secret
+GOOGLE_DOCUMENT_TITLE=Documentation
+
+# Notion Configuration
+NOTION_API_TOKEN=secret_your-notion-integration-token
+NOTION_ROOT_PAGE_ID=your-root-page-id
 ```
 
 ## 🔧 Key Features
@@ -96,11 +121,36 @@ docs/
 ```
 
 ### Internal Link Processing
-Converts Docusaurus links to Confluence URLs:
+Converts Docusaurus links to platform-specific URLs:
 - `./sibling.md` → `https://domain.atlassian.net/wiki/spaces/SPACE/pages/ID/Title`
-- `../parent.md` → Confluence URL with proper hierarchy
+- `../parent.md` → Platform URL with proper hierarchy
 - `/docs/absolute-path` → Resolved absolute paths
 - `./file.md#section` → Anchor links preserved
+
+### Target Page Sync (Confluence Only)
+Sync markdown files directly to specific Confluence pages:
+
+```bash
+# CLI flag method
+docflu sync --file docs/my-doc.md --target 123456
+docflu sync --file docs/my-doc.md --target "https://domain.atlassian.net/wiki/spaces/DOC/pages/123456/Page+Title"
+```
+
+```markdown
+---
+title: My Document
+confluence_target: 123456
+---
+
+# My Document
+Content will sync to page ID 123456.
+```
+
+**Supported URL formats:**
+- Page ID: `123456`
+- Modern URL: `https://domain.atlassian.net/wiki/spaces/DOC/pages/123456/Page+Title`
+- Legacy URL: `https://domain.atlassian.net/pages/viewpage.action?pageId=123456`
+- Display URL: `https://domain.atlassian.net/display/DOC/Page+Title?pageId=123456`
 
 ### Comprehensive Diagram Support
 Automatically converts diagrams to high-quality SVG images:
@@ -169,11 +219,17 @@ npm test
 node test/test-basic.js
 node test/test-hierarchy.js
 node test/test-internal-references.js
+node test/test-target-page-sync.js
 
 # Test diagram processing
 node test/test-diagram-comprehensive.js    # All 4 diagram types
 node test/test-diagram-real.js            # Real conversion test
 node test/test-mermaid.js                 # Mermaid specific
+
+# Test platform integrations
+npm run test:gdocs                        # Google Docs tests
+npm run test:notion                       # Notion tests
+npm run test:target-page                  # Target page sync tests
 ```
 
 ## 🛠️ Development
@@ -188,19 +244,27 @@ docflu/
 │   ├── commands/              # CLI commands
 │   │   ├── sync.js           # Confluence sync
 │   │   ├── sync_gdocs.js     # Google Docs sync
+│   │   ├── sync_notion.js    # Notion sync
 │   │   └── init.js           # Configuration
 │   └── core/                 # Core modules
 │       ├── confluence-client.js
 │       ├── markdown-parser.js
 │       ├── docusaurus-scanner.js
 │       ├── state-manager.js
-│       └── gdocs/            # Google Docs integration
-│           ├── google-docs-client.js    # API client
-│           ├── google-docs-converter.js  # Markdown conversion
-│           ├── google-docs-state.js     # State management
-│           └── google-docs-sync.js      # Sync orchestration
+│       ├── gdocs/            # Google Docs integration
+│       │   ├── google-docs-client.js    # API client
+│       │   ├── google-docs-converter.js  # Markdown conversion
+│       │   ├── google-docs-state.js     # State management
+│       │   └── google-docs-sync.js      # Sync orchestration
+│       └── notion/           # Notion integration
+│           ├── notion-client.js         # API client
+│           ├── notion-sync.js           # Sync orchestration
+│           ├── markdown-to-blocks.js    # Block conversion
+│           └── hierarchy-manager.js     # Page hierarchy
 └── test/                      # Test files
-    └── gdocs/                # Google Docs tests
+    ├── gdocs/                # Google Docs tests
+    ├── notion/               # Notion tests
+    └── test-target-page-sync.js  # Target page sync tests
 ```
 
 ### Contributing
@@ -234,15 +298,17 @@ DEBUG=1 docflu sync --docs
 
 ## 📈 Status
 
-### ✅ Completed (25/25 features)
+### ✅ Completed (30/30 features)
+- **Multi-platform support**: Confluence, Google Docs, Notion ⭐ NEW
+- **Target page sync**: Direct sync to specific Confluence pages ⭐ NEW
 - Single & multi-file sync
-- Hierarchy support
+- Hierarchy support across all platforms
 - Internal reference processing
 - Image & comprehensive diagram handling (4 types)
 - State management & migration
 - CLI commands & configuration
-- **Enhanced diagram quality & upload fixes** ⭐ NEW
-- **Confluence compatibility optimization** ⭐ NEW
+- Enhanced diagram quality & upload fixes
+- Platform-specific optimizations
 
 ### 🔄 Planned
 - Blog post sync
@@ -253,7 +319,16 @@ DEBUG=1 docflu sync --docs
 
 ## 📋 Changelog
 
-### v1.2.0 (Latest) - Enhanced Diagram Quality & Fixes
+### v1.3.0 (Latest) - Multi-Platform & Target Page Sync
+- **✅ Multi-Platform Support**: Added Google Docs and Notion sync capabilities
+- **✅ Target Page Sync**: Direct sync to specific Confluence pages via CLI flag or frontmatter
+- **✅ OAuth2 Integration**: Google Docs authentication with PKCE flow
+- **✅ Notion File Upload**: Native Notion File Upload API integration
+- **✅ URL Parsing**: Support for multiple Confluence URL formats
+- **✅ Platform-Specific Optimizations**: Tailored output for each platform
+- **✅ Comprehensive Testing**: Test suites for all platforms and features
+
+### v1.2.0 - Enhanced Diagram Quality & Fixes
 - **✅ Mermaid Transparency Fix**: Fixed transparent background issues on Confluence display
 - **✅ Enhanced SVG Quality**: Improved text visibility, proper backgrounds, and Confluence compatibility
 - **✅ File Size Optimization**: 30% reduction in SVG file sizes with maintained visual quality
@@ -288,6 +363,8 @@ MIT License - see [LICENSE](LICENSE) file.
 **Technologies**:
 - [Docusaurus](https://docusaurus.io/) - Documentation platform
 - [Confluence](https://www.atlassian.com/software/confluence) - Collaboration workspace
+- [Google Docs](https://docs.google.com/) - Document creation and collaboration
+- [Notion](https://notion.so/) - All-in-one workspace
 - [Node.js](https://nodejs.org/) + [Commander.js](https://github.com/tj/commander.js/)
 
 ---
