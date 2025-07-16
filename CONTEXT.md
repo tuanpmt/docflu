@@ -718,6 +718,51 @@ node bin/docflu.js sync --docs  # Second run: 8 skipped (no changes)
 - **File Optimization**: 30% smaller SVG files with maintained visual quality
 - **User Experience**: Clear error messages with helpful suggestions for diagram syntax issues
 
+### 🔌 **New Feature: Confluence Mermaid Plugin Integration** ✅ COMPLETED
+- **Plugin Support**: Direct integration with multiple Confluence Mermaid plugins via `.mmd` attachment files
+- **Multi-Plugin Compatibility**: Supports various plugins with configurable macro names:
+  - `mermaid` (Mermaid Charts & Diagrams by weweave) 
+  - `mermaid-cloud` (Mermaid for Confluence by Tech Labs)
+  - `mermaid-diagram` (Mermaid Diagrams by Stratus Add-ons)
+  - Custom plugin names via `CONFLUENCE_MERMAID_PLUGIN_NAME`
+- **Configuration**: 
+  - `CONFLUENCE_USE_MERMAID_PLUGIN=true` to enable
+  - `CONFLUENCE_MERMAID_PLUGIN_NAME=mermaid` to specify macro name
+- **Attachment-Based**: Uploads `.mmd` source files as page attachments, macros reference these files
+- **Macro Generation**: Generates structured macros with `attachment` parameter instead of SVG images
+- **Bidirectional Sync**: Full support for converting plugin macros back to markdown for all plugin types
+- **Dynamic Choice**: Toggle between SVG generation (default) and plugin integration
+- **Testing**: Complete test suites with `npm run test:mermaid-plugin` and `npm run test:mermaid-plugin-names`
+- **Documentation**: Comprehensive plugin integration guide with plugin compatibility matrix
+
+**Implementation Details**:
+- Enhanced DiagramProcessor with `.mmd` file upload functionality for plugin integration
+- Added `mermaidPluginName` option for flexible plugin macro name configuration
+- Updated MarkdownParser to generate dynamic macro names based on plugin configuration
+- Modified sync commands to pass both `useMermaidPlugin` and `mermaidPluginName` options
+- Enhanced bidirectional conversion to support multiple plugin macro names
+- Created comprehensive test suites validating different plugin configurations
+
+**Usage Examples**:
+```bash
+# Enable plugin integration in .env
+CONFLUENCE_USE_MERMAID_PLUGIN=true
+CONFLUENCE_MERMAID_PLUGIN_NAME=mermaid  # Default: 'mermaid'
+
+# For different plugins:
+CONFLUENCE_MERMAID_PLUGIN_NAME=mermaid-cloud    # Tech Labs plugin
+CONFLUENCE_MERMAID_PLUGIN_NAME=mermaid-diagram  # Stratus Add-ons plugin
+
+# Sync with plugin integration
+docflu sync --docs
+# → Generates: <ac:structured-macro ac:name="mermaid"> with .mmd attachment
+
+# Disable plugin integration  
+CONFLUENCE_USE_MERMAID_PLUGIN=false  
+docflu sync --docs
+# → Generates: <ac:image><ri:attachment>
+```
+
 ## 🧠 Lessons Learned
 
 1. **Package compatibility**: Check ESM/CommonJS before using

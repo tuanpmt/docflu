@@ -10,6 +10,8 @@
     "test": "node test/test-basic.js",
     "test:hierarchy": "node test/test-hierarchy.js",
     "test:mermaid": "node test/test-mermaid.js",
+    "test:mermaid-plugin": "node test/test-mermaid-plugin.js",
+    "test:mermaid-plugin-names": "node test/test-mermaid-plugin-names.js",
     "test:references": "node test/test-internal-references.js",
     "test:migration": "node test/test-migration.js",
     "test:init": "node test/test-init.js",
@@ -21,7 +23,7 @@
     "test:gdocs-converter": "node test/gdocs/test-converter.js",
     "test:gdocs-sync": "node test/gdocs/test-sync.js",
     "test:target-page": "node test/test-target-page-sync.js",
-    "test:all": "npm run test && npm run test:hierarchy && npm run test:mermaid && npm run test:references && npm run test:migration && npm run test:init && npm run test:diagram-comprehensive && npm run test:google-docs && npm run test:gdocs && npm run test:target-page"
+    "test:all": "npm run test && npm run test:hierarchy && npm run test:mermaid && npm run test:mermaid-plugin && npm run test:references && npm run test:migration && npm run test:init && npm run test:diagram-comprehensive && npm run test:google-docs && npm run test:gdocs && npm run test:target-page"
   },
   "dependencies": {
     "@notionhq/client": "^2.3.0",
